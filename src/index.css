@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@theme {
+  --color-astraya-background: #050816;
+  --color-astraya-surface: #0c1222;
+  --color-astraya-surface-soft: #10192e;
+  --color-astraya-border: #22314d;
+
+  --color-astraya-text: #f3f5fc;
+  --color-astraya-muted: #8d9ab8;
+
+  --color-astraya-accent: #6f9dff;
+  --color-astraya-accent-light: #9fc4ff;
+
+  --radius-astraya-card: 1.5rem;
+  --radius-astraya-control: 1rem;
+
+  --shadow-astraya-glow: 0 0 24px rgb(111 157 255 / 25%);
+  --shadow-astraya-card: 0 18px 50px rgb(0 0 0 / 35%);
+}
