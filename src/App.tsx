@@ -3,6 +3,7 @@ import CreationName from "./components/CreationName";
 import DurationSelector from "./components/DurationSelector";
 import PitchSelector from "./components/PitchSelector";
 import AtmosphereSelector from "./components/AtmosphereSelector";
+import MusicalThemeSelector from "./components/MusicalThemeSelector";
 import NatureSoundsMixer from "./components/NatureSoundsMixer";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
             <DurationSelector />
             <PitchSelector />
             <AtmosphereSelector />
+            <MusicalThemeSelector />
             <NatureSoundsMixer />
         </div>
         </main>
