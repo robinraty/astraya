@@ -10,7 +10,7 @@ function PitchSelector() {
         type="button"
         className="border-r border-astraya-border bg-astraya-accent/10 px-4 py-4 text-astraya-text"
         >
-        Deep
+        Dark
         </button>
         
         <button

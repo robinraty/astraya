@@ -1,6 +1,3 @@
-import Header from "../components/createMeditation/Header";
-import CreationName from "../components/createMeditation/CreationName";
-import DurationSelector from "../components/createMeditation/DurationSelector";
 import PitchSelector from "../components/createMeditation/PitchSelector";
 import AtmosphereSelector from "../components/createMeditation/AtmosphereSelector";
 import MusicalThemeSelector from "../components/createMeditation/MusicalThemeSelector";
@@ -11,14 +8,11 @@ function CreateMeditation() {
   return (
     <main className="min-h-screen bg-astraya-background px-4 py-8 text-astraya-text">
       <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-        <Header />
-        <CreationName />
-        <DurationSelector />
+        <MeditationActions />
         <PitchSelector />
         <AtmosphereSelector />
         <MusicalThemeSelector />
         <NatureSoundsMixer />
-        <MeditationActions />
       </div>
     </main>
   );
