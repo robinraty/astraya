@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap");
+
 @import "tailwindcss";
 
 @theme {
@@ -12,9 +14,16 @@
   --color-astraya-accent: #6f9dff;
   --color-astraya-accent-light: #9fc4ff;
 
+  --font-astraya-brand: "Cormorant Garamond", serif;
+  --font-astraya-ui: "Inter", sans-serif;
+  --color-astraya-brand: #a8bce6;
+
   --radius-astraya-card: 1.5rem;
   --radius-astraya-control: 1rem;
 
   --shadow-astraya-glow: 0 0 24px rgb(111 157 255 / 25%);
   --shadow-astraya-card: 0 18px 50px rgb(0 0 0 / 35%);
+
+--shadow-astraya-selected:
+  inset 0 0 22px rgb(111 157 255 / 28%);
 }

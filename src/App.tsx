@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="min-h-screen bg-astraya-background text-astraya-text">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4">
-        <header className="py-8">
+        <header className="pt-6 pb-2">
           <Header />
         </header>
 

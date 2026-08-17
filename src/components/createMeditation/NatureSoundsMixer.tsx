@@ -1,3 +1,11 @@
+import {
+  CloudRain,
+  Trees,
+  Bird,
+  ZodiacAquarius,
+  Waves,
+} from "lucide-react";
+
 function NatureSoundsMixer() {
   return (
     <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
@@ -13,8 +21,15 @@ function NatureSoundsMixer() {
 
       <div className="space-y-4">
         {/* RAIN */}
-        <div className="grid grid-cols-[70px_1fr_45px_48px] items-center gap-3">
-          <p className="text-sm text-astraya-text">Rain</p>
+        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+          <div className="flex items-center gap-2 text-astraya-text">
+            <CloudRain
+              size={20}
+              strokeWidth={1.5}
+              className="text-astraya-muted"
+            />
+            <span className="text-sm">Rain</span>
+          </div>
 
           <input
             type="range"
@@ -36,8 +51,15 @@ function NatureSoundsMixer() {
         </div>
 
         {/* FOREST */}
-        <div className="grid grid-cols-[70px_1fr_45px_48px] items-center gap-3">
-          <p className="text-sm text-astraya-text">Forest</p>
+        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+          <div className="flex items-center gap-2 text-astraya-text">
+            <Trees
+              size={20}
+              strokeWidth={1.5}
+              className="text-astraya-muted"
+            />
+            <span className="text-sm">Forest</span>
+          </div>
 
           <input
             type="range"
@@ -59,8 +81,15 @@ function NatureSoundsMixer() {
         </div>
 
         {/* BIRDS */}
-        <div className="grid grid-cols-[70px_1fr_45px_48px] items-center gap-3">
-          <p className="text-sm text-astraya-text">Birds</p>
+        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+          <div className="flex items-center gap-2 text-astraya-text">
+            <Bird
+              size={20}
+              strokeWidth={1.5}
+              className="text-astraya-muted"
+            />
+            <span className="text-sm">Birds</span>
+          </div>
 
           <input
             type="range"
@@ -82,8 +111,15 @@ function NatureSoundsMixer() {
         </div>
 
         {/* RIVER */}
-        <div className="grid grid-cols-[70px_1fr_45px_48px] items-center gap-3">
-          <p className="text-sm text-astraya-text">River</p>
+        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+          <div className="flex items-center gap-2 text-astraya-text">
+            <ZodiacAquarius
+              size={20}
+              strokeWidth={1.5}
+              className="text-astraya-muted"
+            />
+            <span className="text-sm">River</span>
+          </div>
 
           <input
             type="range"
@@ -105,8 +141,15 @@ function NatureSoundsMixer() {
         </div>
 
         {/* WAVES */}
-        <div className="grid grid-cols-[70px_1fr_45px_48px] items-center gap-3">
-          <p className="text-sm text-astraya-text">Waves</p>
+        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+          <div className="flex items-center gap-2 text-astraya-text">
+            <Waves
+              size={20}
+              strokeWidth={1.5}
+              className="text-astraya-muted"
+            />
+            <span className="text-sm">Waves</span>
+          </div>
 
           <input
             type="range"

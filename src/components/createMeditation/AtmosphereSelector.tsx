@@ -1,3 +1,5 @@
+import { AudioWaveform, Wind } from "lucide-react";
+
 function AtmosphereSelector() {
   return (
     <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
@@ -18,16 +20,18 @@ function AtmosphereSelector() {
       <div className="mt-4 grid grid-cols-2 overflow-hidden rounded-astraya-control border border-astraya-border">
         <button
           type="button"
-          className="border-r border-astraya-border px-4 py-3 text-astraya-muted transition hover:bg-astraya-surface-soft hover:text-astraya-text"
+          className="flex items-center justify-center gap-2 border-r border-astraya-border px-4 py-3 text-astraya-muted transition hover:bg-astraya-surface-soft hover:text-astraya-text"
         >
-          Deep
+          <AudioWaveform size={18} strokeWidth={1.5} />
+          <span>Deep</span>
         </button>
 
         <button
           type="button"
-          className="bg-astraya-accent/10 px-4 py-3 text-astraya-text"
+          className="flex items-center justify-center gap-2 bg-astraya-accent/10 px-4 py-3 text-astraya-text"
         >
-          Airy
+          <Wind size={18} strokeWidth={1.5} />
+          <span>Airy</span>
         </button>
       </div>
     </section>
