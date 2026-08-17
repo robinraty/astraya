@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 function MusicalThemeSelector() {
+  const [isMusicalThemeEnabled, setIsMusicalThemeEnabled] = useState(true);
+
   return (
     <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
       <div className="flex items-center justify-between gap-4">
@@ -9,7 +13,12 @@ function MusicalThemeSelector() {
         <button
           type="button"
           aria-label="Toggle musical theme"
-          className="flex h-7 w-12 items-center justify-end rounded-full border border-astraya-accent bg-astraya-accent/20 p-1 shadow-astraya-glow"
+          onClick={() => setIsMusicalThemeEnabled(!isMusicalThemeEnabled)}
+          className={`flex h-7 w-12 cursor-pointer items-center rounded-full border p-1 transition ${
+            isMusicalThemeEnabled
+              ? "justify-end border-astraya-accent bg-astraya-accent/20 shadow-astraya-glow"
+              : "justify-start border-astraya-border bg-astraya-surface-soft"
+          }`}
         >
           <span className="h-5 w-5 rounded-full bg-astraya-text" />
         </button>
@@ -17,10 +26,20 @@ function MusicalThemeSelector() {
 
       <button
         type="button"
-        className="mt-4 flex w-full items-center justify-between gap-4 rounded-astraya-control border border-astraya-accent bg-astraya-accent/10 px-4 py-3 text-left transition hover:bg-astraya-surface-soft"
+        className={`mt-4 flex w-full cursor-pointer items-center justify-between gap-4 rounded-astraya-control border px-4 py-3 text-left transition ${
+          isMusicalThemeEnabled
+            ? "border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
+            : "border-astraya-border bg-astraya-surface-soft text-astraya-muted opacity-60"
+        }`}
       >
         <div>
-          <p className="text-sm font-medium text-astraya-text">
+          <p
+            className={`text-sm font-medium ${
+              isMusicalThemeEnabled
+                ? "text-astraya-text"
+                : "text-astraya-muted"
+            }`}
+          >
             Moon Piano
           </p>
 
@@ -29,7 +48,13 @@ function MusicalThemeSelector() {
           </p>
         </div>
 
-        <span className="text-xl text-astraya-accent-light">
+        <span
+          className={`text-xl ${
+            isMusicalThemeEnabled
+              ? "text-astraya-accent-light"
+              : "text-astraya-muted"
+          }`}
+        >
           ›
         </span>
       </button>

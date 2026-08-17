@@ -1,0 +1,8 @@
+Toggle animé : actuellement le rond change de côté. Ajoute une vraie transition pour qu'il glisse doucement, avec le glow qui apparaît progressivement. Petit détail, gros gain de finition.
+Sliders plus vivants : quand tu déplaces Rain/Forest/etc., le thumb pourrait prendre un léger glow. Quand le volume arrive à 0, la piste et l'icône s'atténuent progressivement en même temps que le toggle s'éteint.
+Nature Sounds actifs légèrement lumineux : pas une animation permanente. Juste l'icône d'un son actif légèrement plus bleue que celle d'un son à 0 %. Ça permettrait de lire instantanément quels layers participent au mix.
+Transition des sélecteurs : quand tu passes Deep → Airy, le nouveau bouton ne devrait pas juste changer instantanément de background. Une transition de 150-250ms sur background, border, shadow et texte donnerait beaucoup plus de douceur.
+Preview est LE bon endroit pour l'animation permanente : ta bordure tournante suffit largement. Je n'ajouterais pas d'autres éléments qui bougent continuellement sur cette page.
+Musical Theme : au clic sur Moon Piano, quand on aura plusieurs thèmes, tu pourrais ouvrir un petit panneau/modal avec les presets. Une transition légère opacity + translateY rendrait le truc très propre.
+Header Astraya : c'est probablement là que tu peux encore gagner énormément. Une petite lune à côté de Astraya, comme ta référence, avec éventuellement un halo extrêmement subtil. Pas nécessairement animé.
+Au clic sur Save : ouverture d'une modal élégante pour entrer le nom, puis petite confirmation du genre Saved to Library qui apparaît brièvement. Là aussi ça donne énormément l'impression d'utiliser une vraie app.

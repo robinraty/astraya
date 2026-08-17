@@ -27,3 +27,46 @@
 --shadow-astraya-selected:
   inset 0 0 22px rgb(111 157 255 / 28%);
 }
+
+/* =-=-=-=-=-=*/
+/* ANIMATIONS */
+/* =-=-=-=-=-=*/
+
+/* Effect on play btn */
+/* cette classe contient un conic-gradient dont l'angle passe progressivement de 0 deg a 360deg en 3s */
+@property --previewAngle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.previewPlaying {
+  border: 1px solid transparent;
+
+  background:
+    linear-gradient(
+        var(--color-astraya-surface-soft),
+        var(--color-astraya-surface-soft)
+      )
+      padding-box,
+    conic-gradient(
+        from var(--previewAngle),
+        transparent 0deg,
+        var(--color-astraya-accent) 70deg,
+        var(--color-astraya-accent-light) 100deg,
+        transparent 150deg
+      )
+      border-box;
+
+  box-shadow:
+    0 0 18px rgb(111 157 255 / 18%),
+    inset 0 0 18px rgb(111 157 255 / 12%);
+
+  animation: previewBorderSpin 4s linear infinite;
+}
+
+@keyframes previewBorderSpin {
+  to {
+    --previewAngle: 360deg;
+  }
+}

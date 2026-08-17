@@ -7,11 +7,11 @@ function PitchSelector() {
     const isSelected = selectedPitch === pitch;
 
     return `
-      cursor-pointer px-4 py-4 transition
+      relative cursor-pointer border px-4 py-4 transition
       ${
         isSelected
-          ? "bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
-          : "text-astraya-muted hover:bg-astraya-surface-soft hover:text-astraya-text"
+          ? "z-10 border-astraya-accent bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
+          : "border-astraya-border text-astraya-muted hover:bg-astraya-surface-soft hover:text-astraya-text"
       }
     `;
   };
@@ -22,19 +22,20 @@ function PitchSelector() {
         Pitch / Mood
       </p>
 
-      <div className="grid grid-cols-3 overflow-hidden rounded-astraya-control border border-astraya-border">
+      <div className="grid grid-cols-3">
         <button
           type="button"
           onClick={() => setSelectedPitch("dark")}
-          className={`${getButtonClass("dark")} border-r border-astraya-border`}
+          className={`${getButtonClass("dark")} rounded-l-astraya-control`}
         >
           Dark
         </button>
 
+        {/* On decale le bouton de 1px parce qu'ils sont colles et donc ca fera 2px de border au lieu de 1... */}
         <button
           type="button"
           onClick={() => setSelectedPitch("natural")}
-          className={`${getButtonClass("natural")} border-r border-astraya-border`}
+          className={`${getButtonClass("natural")} -ml-px`}
         >
           Natural
         </button>
@@ -42,7 +43,7 @@ function PitchSelector() {
         <button
           type="button"
           onClick={() => setSelectedPitch("bright")}
-          className={getButtonClass("bright")}
+          className={`${getButtonClass("bright")} -ml-px rounded-r-astraya-control`}
         >
           Bright
         </button>
