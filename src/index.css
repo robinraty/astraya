@@ -28,6 +28,16 @@
   inset 0 0 22px rgb(111 157 255 / 28%);
 }
 
+
+
+body {
+  font-family: var(--font-astraya-ui);
+}
+
+
+
+
+
 /* =-=-=-=-=-=*/
 /* ANIMATIONS */
 /* =-=-=-=-=-=*/
@@ -70,3 +80,6 @@
     --previewAngle: 360deg;
   }
 }
+
+
+

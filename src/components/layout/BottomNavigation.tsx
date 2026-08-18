@@ -1,4 +1,4 @@
-import { Moon, SlidersHorizontal, Library } from "lucide-react";
+import { Moon, SlidersHorizontal, Headphones } from "lucide-react";
 
 function BottomNavigation() {
   return (
@@ -9,7 +9,7 @@ function BottomNavigation() {
           className="flex cursor-pointer flex-col items-center gap-1 transition hover:text-astraya-text"
         >
           <Moon size={20} strokeWidth={1.5} />
-          <span className="text-xs">Meditate</span>
+          <span className="text-sm">Meditate</span>
         </button>
 
         <button
@@ -17,15 +17,15 @@ function BottomNavigation() {
           className="flex cursor-pointer flex-col items-center gap-1 text-astraya-accent transition hover:text-astraya-text"
         >
           <SlidersHorizontal size={20} strokeWidth={1.5} />
-          <span className="text-xs">Create</span>
+          <span className="text-sm">Create</span>
         </button>
 
         <button
           type="button"
           className="flex cursor-pointer flex-col items-center gap-1 transition hover:text-astraya-text"
         >
-          <Library size={20} strokeWidth={1.5} />
-          <span className="text-xs">Library</span>
+          <Headphones size={20} strokeWidth={1.5} />
+          <span className="text-sm">Library</span>
         </button>
       </div>
     </nav>
