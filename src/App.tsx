@@ -4,13 +4,13 @@ import CreateMeditation from "./pages/CreateMeditation";
 
 function App() {
   return (
-    <div className="min-h-screen bg-astraya-background text-astraya-text">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4">
-        <header className="pt-6 pb-2">
+    <div className="min-h-dvh bg-astraya-background text-astraya-text">
+      <div className="mx-auto min-h-dvh w-full max-w-md px-4">
+        <header className="pt-5 pb-2">
           <Header />
         </header>
 
-        <main className="flex-1 pb-24">
+        <main className="pb-24">
           <CreateMeditation />
         </main>
       </div>

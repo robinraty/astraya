@@ -6,15 +6,15 @@ import MeditationActions from "../components/createMeditation/MeditationActions"
 
 function CreateMeditation() {
   return (
-    <main className="min-h-screen bg-astraya-background px-4 py-8 text-astraya-text">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
+    <div className="bg-astraya-background px-2 py-5 text-astraya-text">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-5">
         <MeditationActions />
         <PitchSelector />
         <AtmosphereSelector />
         <MusicalThemeSelector />
         <NatureSoundsMixer />
       </div>
-    </main>
+    </div>
   );
 }
 

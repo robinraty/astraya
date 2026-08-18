@@ -60,8 +60,11 @@ function NatureSoundsMixer() {
     `;
   };
 
+  const rowClass =
+    "grid grid-cols-[76px_1fr_36px_48px] items-center gap-2";
+
   return (
-    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
+    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 px-4 py-4 shadow-astraya-card">
       <div className="mb-4">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
           Nature Sounds
@@ -74,12 +77,12 @@ function NatureSoundsMixer() {
 
       <div className="space-y-4">
         {/* RAIN */}
-        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+        <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <CloudRain
               size={20}
               strokeWidth={1.5}
-              className="text-astraya-muted"
+              className="shrink-0 text-astraya-muted"
             />
             <span className="text-sm">Rain</span>
           </div>
@@ -96,7 +99,7 @@ function NatureSoundsMixer() {
                 setRainLastVolume
               )
             }
-            className={`w-full cursor-pointer accent-astraya-accent ${
+            className={`w-full min-w-0 cursor-pointer accent-astraya-accent ${
               rainVolume === 0 ? "opacity-40" : ""
             }`}
           />
@@ -118,12 +121,12 @@ function NatureSoundsMixer() {
         </div>
 
         {/* FOREST */}
-        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+        <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Trees
               size={20}
               strokeWidth={1.5}
-              className="text-astraya-muted"
+              className="shrink-0 text-astraya-muted"
             />
             <span className="text-sm">Forest</span>
           </div>
@@ -140,7 +143,7 @@ function NatureSoundsMixer() {
                 setForestLastVolume
               )
             }
-            className={`w-full cursor-pointer accent-astraya-accent ${
+            className={`w-full min-w-0 cursor-pointer accent-astraya-accent ${
               forestVolume === 0 ? "opacity-40" : ""
             }`}
           />
@@ -162,12 +165,12 @@ function NatureSoundsMixer() {
         </div>
 
         {/* BIRDS */}
-        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+        <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Bird
               size={20}
               strokeWidth={1.5}
-              className="text-astraya-muted"
+              className="shrink-0 text-astraya-muted"
             />
             <span className="text-sm">Birds</span>
           </div>
@@ -184,7 +187,7 @@ function NatureSoundsMixer() {
                 setBirdsLastVolume
               )
             }
-            className={`w-full cursor-pointer accent-astraya-accent ${
+            className={`w-full min-w-0 cursor-pointer accent-astraya-accent ${
               birdsVolume === 0 ? "opacity-40" : ""
             }`}
           />
@@ -206,12 +209,12 @@ function NatureSoundsMixer() {
         </div>
 
         {/* RIVER */}
-        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+        <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <ZodiacAquarius
               size={20}
               strokeWidth={1.5}
-              className="text-astraya-muted"
+              className="shrink-0 text-astraya-muted"
             />
             <span className="text-sm">River</span>
           </div>
@@ -228,7 +231,7 @@ function NatureSoundsMixer() {
                 setRiverLastVolume
               )
             }
-            className={`w-full cursor-pointer accent-astraya-accent ${
+            className={`w-full min-w-0 cursor-pointer accent-astraya-accent ${
               riverVolume === 0 ? "opacity-40" : ""
             }`}
           />
@@ -250,12 +253,12 @@ function NatureSoundsMixer() {
         </div>
 
         {/* WAVES */}
-        <div className="grid grid-cols-[90px_1fr_45px_48px] items-center gap-3">
+        <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Waves
               size={20}
               strokeWidth={1.5}
-              className="text-astraya-muted"
+              className="shrink-0 text-astraya-muted"
             />
             <span className="text-sm">Waves</span>
           </div>
@@ -272,7 +275,7 @@ function NatureSoundsMixer() {
                 setWavesLastVolume
               )
             }
-            className={`w-full cursor-pointer accent-astraya-accent ${
+            className={`w-full min-w-0 cursor-pointer accent-astraya-accent ${
               wavesVolume === 0 ? "opacity-40" : ""
             }`}
           />
