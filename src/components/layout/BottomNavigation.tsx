@@ -1,32 +1,49 @@
-import { Moon, SlidersHorizontal, Headphones } from "lucide-react";
+import { Headphones, SlidersHorizontal, Moon } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 function BottomNavigation() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t border-astraya-border bg-astraya-background/95 px-6 py-3 text-astraya-muted backdrop-blur">
-      <div className="mx-auto flex w-full max-w-md items-center justify-around">
-        <button
-          type="button"
-          className="flex cursor-pointer flex-col items-center gap-1 transition hover:text-astraya-text"
+    // Navigation fixe en bas de l'écran
+    <nav className="fixed bottom-0 left-0 right-0 border-t border-astraya-border bg-astraya-background">
+      <div className="mx-auto flex max-w-md items-center justify-around px-4 py-3">
+        {/* NavLink navigue vers une route et sait si elle est active */}
+        <NavLink
+          to="/meditate"
+          className={({ isActive }) =>
+            isActive
+              ? "flex flex-col items-center gap-1 text-astraya-accent"
+              : "flex flex-col items-center gap-1 text-astraya-muted"
+          }
         >
-          <Moon size={20} strokeWidth={1.5} />
+          <Moon size={20} />
           <span className="text-sm">Meditate</span>
-        </button>
+        </NavLink>
 
-        <button
-          type="button"
-          className="flex cursor-pointer flex-col items-center gap-1 text-astraya-accent transition hover:text-astraya-text"
+        {/* isActive vaut true quand l'URL actuelle est /create */}
+        <NavLink
+          to="/create"
+          className={({ isActive }) =>
+            isActive
+              ? "flex flex-col items-center gap-1 text-astraya-accent"
+              : "flex flex-col items-center gap-1 text-astraya-muted"
+          }
         >
-          <SlidersHorizontal size={20} strokeWidth={1.5} />
+          <SlidersHorizontal size={20} />
           <span className="text-sm">Create</span>
-        </button>
+        </NavLink>
 
-        <button
-          type="button"
-          className="flex cursor-pointer flex-col items-center gap-1 transition hover:text-astraya-text"
+        {/* Même logique pour la page Library */}
+        <NavLink
+          to="/library"
+          className={({ isActive }) =>
+            isActive
+              ? "flex flex-col items-center gap-1 text-astraya-accent"
+              : "flex flex-col items-center gap-1 text-astraya-muted"
+          }
         >
-          <Headphones size={20} strokeWidth={1.5} />
+          <Headphones size={20} />
           <span className="text-sm">Library</span>
-        </button>
+        </NavLink>
       </div>
     </nav>
   );

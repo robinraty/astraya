@@ -31,21 +31,7 @@ function MusicalThemeSelector() {
               : "border-astraya-border bg-astraya-surface-soft shadow-none"
           }`}
         >
-          {/*
-            Petit rond blanc du toggle.
-
-            top-1/2 = on place le rond a 50% de la hauteur du bouton
-            -translate-y-1/2 = on le remonte ensuite de la moitie de sa propre hauteur
-
-            Donc il est vraiment centre verticalement.
-
-            Pour le mouvement horizontal :
-            translate-x-0 = OFF
-            translate-x-5 = ON
-
-            transition-transform + duration-300 =
-            le rond glisse doucement au lieu de changer de cote instantanement.
-          */}
+          {/* Petit rond blanc du toggle qui glisse entre OFF et ON */}
           <span
             className={`absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-astraya-text transition-transform duration-300 ease-out ${
               isMusicalThemeEnabled ? "translate-x-5" : "translate-x-0"
@@ -54,31 +40,25 @@ function MusicalThemeSelector() {
         </button>
       </div>
 
-      {/*
-        Bouton qui represente le theme musical actuellement choisi.
-
-        Pour le moment il affiche toujours Moon Piano.
-
-        Si Musical Theme est OFF et que je clique ici,
-        il se reactive automatiquement.
-
-        Plus tard, le click pourra aussi ouvrir
-        le choix entre plusieurs themes musicaux.
-      */}
+      {/* Bouton qui represente le theme musical actuellement choisi */}
       <button
         type="button"
         onClick={handleMusicalThemeSelect}
-        className={`mt-4 flex w-full cursor-pointer items-center justify-between gap-4 rounded-astraya-control border px-4 py-3 text-left transition-all duration-300 ease-out ${
+        className={`mt-4 flex w-full cursor-pointer items-center gap-3 rounded-astraya-control border p-3 text-left transition-all duration-300 ease-out ${
           isMusicalThemeEnabled
             ? "border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
             : "border-astraya-border bg-astraya-surface-soft text-astraya-muted opacity-60 shadow-none"
         }`}
       >
-        <div>
-          {/*
-            Le titre devient plus discret quand Musical Theme est OFF.
-            transition-colors evite un changement de couleur brutal.
-          */}
+        {/* Artwork du theme musical actuellement selectionne */}
+        <img
+          src="/images/presets-artworks/astraya-artwork-moon-piano.png"
+          alt="Moon Piano"
+          className="h-14 w-14 shrink-0 rounded-xl object-cover"
+        />
+
+        {/* Informations du theme musical */}
+        <div className="min-w-0 flex-1">
           <p
             className={`text-sm font-medium transition-colors duration-300 ease-out ${
               isMusicalThemeEnabled
@@ -94,12 +74,9 @@ function MusicalThemeSelector() {
           </p>
         </div>
 
-        {/*
-          Fleche qui indique qu'on pourra choisir un autre theme.
-          Elle s'attenue aussi quand Musical Theme est OFF.
-        */}
+        {/* Fleche qui indique qu'on pourra choisir un autre theme */}
         <span
-          className={`text-xl transition-colors duration-300 ease-out ${
+          className={`shrink-0 text-xl transition-colors duration-300 ease-out ${
             isMusicalThemeEnabled
               ? "text-astraya-accent-light"
               : "text-astraya-muted"
