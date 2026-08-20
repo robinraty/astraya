@@ -52,7 +52,7 @@ function MusicalThemeSelector() {
       >
         {/* Artwork du theme musical actuellement selectionne */}
         <img
-          src="/images/presets-artworks/astraya-artwork-moon-piano.png"
+          src={`${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-moon-piano.png`}
           alt="Moon Piano"
           className="h-14 w-14 shrink-0 rounded-xl object-cover"
         />

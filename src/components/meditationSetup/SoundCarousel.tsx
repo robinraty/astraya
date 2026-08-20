@@ -20,25 +20,25 @@ const astrayaPresets: SoundItem[] = [
     id: "moon-piano",
     name: "Moon Piano",
     description: "Soft and minimal piano phrases",
-    image: "/images/presets-artworks/astraya-artwork-moon-piano.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-moon-piano.png`,
   },
   {
     id: "deep-forest",
     name: "Deep Forest",
     description: "Immersive forest atmosphere",
-    image: "/images/presets-artworks/astraya-artwork-deep-forest.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-deep-forest.png`,
   },
   {
     id: "ocean-waves",
     name: "Ocean Waves",
     description: "Calming wave sounds",
-    image: "/images/presets-artworks/astraya-artwork-ocean-waves.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-ocean-waves.png`,
   },
   {
     id: "rainy-day",
     name: "Rainy Day",
     description: "Gentle rain and distant thunder",
-    image: "/images/presets-artworks/astraya-artwork-rainy-day.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-rainy-day.png`,
   },
 ];
 

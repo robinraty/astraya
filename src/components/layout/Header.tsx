@@ -6,7 +6,7 @@ function Header() {
       <div className="relative translate-x-1">
         {/* LOGO Astraya en absolute pour que typo soit centered */}
         <img
-          src="/logo-astraya.png"
+          src={`${import.meta.env.BASE_URL}images/logo-astraya.png`}
           alt=""
           className="absolute right-full top-1/2 mr-1.5 h-9 w-auto -translate-y-1/2"
         />
