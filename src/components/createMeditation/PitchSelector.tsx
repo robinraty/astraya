@@ -14,11 +14,11 @@ function PitchSelector() {
 
     return `
       relative cursor-pointer border px-4 py-4
-      transition-all duration-300 ease-out
+      backdrop-blur-sm transition-all duration-300 ease-out
       ${
         isSelected
           ? "z-10 border-astraya-accent bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
-          : "border-astraya-border text-astraya-muted hover:bg-astraya-surface-soft hover:text-astraya-text"
+          : "border-astraya-border bg-astraya-surface/20 text-astraya-muted hover:bg-astraya-surface-soft/60 hover:text-astraya-text"
       }
     `;
   };
@@ -29,7 +29,7 @@ function PitchSelector() {
         Pitch / Mood
       </p>
 
-      {/* 
+      {/*
         Les 3 boutons prennent chacun 1 colonne
         donc ils font automatiquement 1/3 de la largeur
       */}

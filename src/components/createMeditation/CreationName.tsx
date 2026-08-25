@@ -1,6 +1,6 @@
 function CreationName() {
     return (
-        <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-6 shadow-astraya-card">
+        <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 backdrop-blur-sm p-6 shadow-astraya-card">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-muted">
         Creation name
         </p>

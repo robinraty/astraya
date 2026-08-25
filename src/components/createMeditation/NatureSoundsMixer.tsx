@@ -116,7 +116,7 @@ function NatureSoundsMixer() {
     "grid grid-cols-[76px_1fr_36px_48px] items-center gap-2";
 
   return (
-    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 px-4 py-4 shadow-astraya-card">
+    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 backdrop-blur-sm px-4 py-4 shadow-astraya-card">
       <div className="mb-4">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
           Nature Sounds

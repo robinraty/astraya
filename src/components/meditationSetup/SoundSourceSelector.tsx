@@ -10,21 +10,34 @@ function SoundSourceSelector({
   selectedSource,
   onSourceChange,
 }: SoundSourceSelectorProps) {
+  // Fonction qui retourne les classes du bouton
+  // selon la source actuellement sélectionnée
+  const getButtonClass = (source: SoundSource) => {
+    const isSelected = selectedSource === source;
+
+    return `
+      relative flex cursor-pointer items-center justify-center border px-4 py-4
+      text-sm backdrop-blur-sm transition-all duration-300 ease-out
+      ${
+        isSelected
+          ? "z-10 border-astraya-accent bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
+          : "border-astraya-border bg-astraya-surface/20 text-astraya-muted hover:bg-astraya-surface-soft/60 hover:text-astraya-text"
+      }
+    `;
+  };
+
   return (
-    <section className="px-4">
-      <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
+    <section>
+      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-astraya-muted">
         Choose your sound
       </p>
 
-      <div className="mt-3 grid grid-cols-2 rounded-astraya-control border border-astraya-border bg-astraya-surface/70 p-1 shadow-astraya-card">
+      {/* Les 2 choix partagent la largeur 50 / 50 */}
+      <div className="grid grid-cols-2">
         <button
           type="button"
           onClick={() => onSourceChange("presets")}
-          className={`cursor-pointer rounded-astraya-control px-4 py-3 text-sm transition-all duration-300 ease-out ${
-            selectedSource === "presets"
-              ? "border border-astraya-accent bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
-              : "border border-transparent text-astraya-muted hover:text-astraya-text"
-          }`}
+          className={`${getButtonClass("presets")} rounded-l-astraya-control`}
         >
           Astraya Presets
         </button>
@@ -32,11 +45,7 @@ function SoundSourceSelector({
         <button
           type="button"
           onClick={() => onSourceChange("creations")}
-          className={`cursor-pointer rounded-astraya-control px-4 py-3 text-sm transition-all duration-300 ease-out ${
-            selectedSource === "creations"
-              ? "border border-astraya-accent bg-astraya-accent/10 text-astraya-text shadow-astraya-selected"
-              : "border border-transparent text-astraya-muted hover:text-astraya-text"
-          }`}
+          className={`${getButtonClass("creations")} -ml-px rounded-r-astraya-control`}
         >
           My Creations
         </button>

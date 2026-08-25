@@ -45,7 +45,7 @@ function AtmosphereSelector() {
   };
 
   return (
-    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
+    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 backdrop-blur-sm p-4 shadow-astraya-card">
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
           Atmosphere

@@ -9,7 +9,7 @@ function MeditationActions() {
       <button
         type="button"
         onClick={() => setIsPreviewPlaying(!isPreviewPlaying)}
-        className={`relative flex flex-1 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-astraya-control px-4 py-3 text-sm text-astraya-text transition ${
+        className={`relative flex flex-1 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-astraya-control px-4 py-3 text-sm text-astraya-text backdrop-blur-sm transition ${
           isPreviewPlaying
             ? "previewPlaying"
             : "border border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
@@ -28,7 +28,7 @@ function MeditationActions() {
 
       <button
         type="button"
-        className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-astraya-control border border-astraya-border bg-astraya-surface/40 px-4 py-3 text-sm text-astraya-muted transition hover:border-astraya-accent hover:bg-astraya-accent/10 hover:text-astraya-text hover:shadow-astraya-selected"
+        className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-astraya-control border border-astraya-border bg-astraya-surface/30 px-4 py-3 text-sm text-astraya-muted backdrop-blur-sm transition hover:border-astraya-accent hover:bg-astraya-accent/10 hover:text-astraya-text hover:shadow-astraya-selected"
       >
         <Save size={18} strokeWidth={1.5} />
         <span>Save</span>

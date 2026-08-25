@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Play,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
 type SoundSource = "presets" | "creations";
 
+// Un SoundItem est un objet qui doit avoir ces quatre propriétés,
+// et TypeScript vérifie leur type.
 type SoundItem = {
   id: string;
   name: string;
@@ -20,25 +18,25 @@ const astrayaPresets: SoundItem[] = [
     id: "moon-piano",
     name: "Moon Piano",
     description: "Soft and minimal piano phrases",
-    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-moon-piano.png`,
+    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-1.png`,
   },
   {
     id: "deep-forest",
     name: "Deep Forest",
     description: "Immersive forest atmosphere",
-    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-deep-forest.png`,
+    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-2.png`,
   },
   {
     id: "ocean-waves",
     name: "Ocean Waves",
     description: "Calming wave sounds",
-    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-ocean-waves.png`,
+    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-3.png`,
   },
   {
     id: "rainy-day",
     name: "Rainy Day",
     description: "Gentle rain and distant thunder",
-    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-rainy-day.png`,
+    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-4.png`,
   },
 ];
 
@@ -49,13 +47,13 @@ const myCreations: SoundItem[] = [
     id: "creation-1",
     name: "Night Focus",
     description: "Piano, rain and deep atmosphere",
-    image: "/images/presets-artworks/astraya-artwork-moon-piano.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-moon-piano.png`,
   },
   {
     id: "creation-2",
     name: "Quiet Forest",
     description: "Forest sounds with soft piano",
-    image: "/images/presets-artworks/astraya-artwork-deep-forest.png",
+    image: `${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-deep-forest.png`,
   },
 ];
 
@@ -70,14 +68,11 @@ function SoundCarousel({ source }: SoundCarouselProps) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Cette ref nous donne accès au vrai élément HTML scrollable.
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // On choisit simplement quel tableau afficher selon la source active.
   const sounds =
     source === "presets" ? astrayaPresets : myCreations;
 
-  // Titre affiché au-dessus du carousel.
   const sectionTitle =
     source === "presets" ? "Explore Presets" : "My Creations";
 
@@ -92,12 +87,12 @@ function SoundCarousel({ source }: SoundCarouselProps) {
       carousel.scrollWidth - carousel.clientWidth;
 
     setCanScrollLeft(carousel.scrollLeft > 1);
+
     setCanScrollRight(
       carousel.scrollLeft < maxScrollLeft - 1,
     );
   };
 
-  // Déplace le carousel de la largeur d'une card.
   const handleCarouselScroll = (
     direction: "left" | "right",
   ) => {
@@ -144,7 +139,6 @@ function SoundCarousel({ source }: SoundCarouselProps) {
     };
   }, []);
 
-  // Quand on change de source, on remet le carousel au début.
   useEffect(() => {
     const carousel = carouselRef.current;
 
@@ -161,10 +155,10 @@ function SoundCarousel({ source }: SoundCarouselProps) {
   }, [source]);
 
   return (
-    <section>
+    <section className="min-w-0">
       {/* Titre de section + flèches de navigation */}
-      <div className="flex items-center justify-between px-4">
-        <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-xs uppercase tracking-[0.2em] text-astraya-muted">
           {sectionTitle}
         </p>
 
@@ -173,89 +167,82 @@ function SoundCarousel({ source }: SoundCarouselProps) {
             type="button"
             aria-label="Previous sounds"
             disabled={!canScrollLeft}
-            onClick={() =>
-              handleCarouselScroll("left")
-            }
+            onClick={() => handleCarouselScroll("left")}
             className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 ease-out ${
               canScrollLeft
-                ? "cursor-pointer border-astraya-border bg-astraya-surface/70 text-astraya-text hover:border-astraya-accent hover:bg-astraya-surface-soft"
-                : "cursor-default border-astraya-border/50 bg-astraya-surface/40 text-astraya-muted/30"
+                ? "cursor-pointer border-astraya-border bg-astraya-surface/20 text-astraya-text backdrop-blur-sm hover:bg-astraya-surface-soft/60"
+                : "cursor-default border-astraya-border/50 bg-astraya-surface/20 text-astraya-muted/30"
             }`}
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={16} strokeWidth={1.5} />
           </button>
 
           <button
             type="button"
             aria-label="Next sounds"
             disabled={!canScrollRight}
-            onClick={() =>
-              handleCarouselScroll("right")
-            }
+            onClick={() => handleCarouselScroll("right")}
             className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 ease-out ${
               canScrollRight
-                ? "cursor-pointer border-astraya-border bg-astraya-surface/70 text-astraya-text hover:border-astraya-accent hover:bg-astraya-surface-soft"
-                : "cursor-default border-astraya-border/50 bg-astraya-surface/40 text-astraya-muted/30"
+                ? "cursor-pointer border-astraya-border bg-astraya-surface/20 text-astraya-text backdrop-blur-sm hover:bg-astraya-surface-soft/60"
+                : "cursor-default border-astraya-border/50 bg-astraya-surface/20 text-astraya-muted/30"
             }`}
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
       </div>
 
-      {/* Rail horizontal continu */}
+      {/* Exactement 3 cartes visibles */}
       <div
         ref={carouselRef}
         onScroll={updateScrollButtons}
-        className="mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-4 flex min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {sounds.map((sound) => (
-          <div
-            key={sound.id}
-            className={`flex w-[118px] shrink-0 snap-start flex-col rounded-astraya-control border p-2 transition-all duration-300 ease-out ${
-              selectedSound === sound.id
-                ? "border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
-                : "border-astraya-border bg-astraya-surface/70"
-            }`}
-          >
-            {/* Cliquer ici sélectionne le son */}
-            <button
-              type="button"
-              onClick={() =>
-                setSelectedSound(sound.id)
-              }
-              className="w-full cursor-pointer text-left"
+        {sounds.map((sound) => {
+          const isSelected = selectedSound === sound.id;
+
+          return (
+            <div
+              key={sound.id}
+              className={`flex w-[calc((100%_-_1.5rem)/3)] shrink-0 snap-start flex-col rounded-astraya-control border p-2 backdrop-blur-sm transition-all duration-300 ease-out ${
+                isSelected
+                  ? "border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
+                  : "border-astraya-border bg-astraya-surface/20"
+              }`}
             >
-              <img
-                src={sound.image}
-                alt={sound.name}
-                className="aspect-square w-full rounded-xl object-cover"
-              />
-
-              <p className="mt-2 text-xs font-medium leading-tight text-astraya-text">
-                {sound.name}
-              </p>
-
-              <p className="mt-1 text-[10px] leading-3.5 text-astraya-muted">
-                {sound.description}
-              </p>
-            </button>
-
-            {/* Preview audio : visuel seulement pour le moment */}
-            <div className="mt-auto flex justify-end pt-3">
               <button
                 type="button"
-                aria-label={`Preview ${sound.name}`}
-                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-astraya-border bg-astraya-surface-soft text-astraya-text transition-all duration-300 ease-out hover:border-astraya-accent"
+                onClick={() => setSelectedSound(sound.id)}
+                className="w-full cursor-pointer text-left"
               >
-                <Play
-                  size={12}
-                  fill="currentColor"
+                <img
+                  src={sound.image}
+                  alt={sound.name}
+                  className="aspect-square w-full rounded-xl object-cover"
                 />
+
+                <p className="mt-2 text-sm font-medium leading-tight text-astraya-text">
+                  {sound.name}
+                </p>
+
+                <p className="mt-1 text-xs leading-4 text-astraya-muted">
+                  {sound.description}
+                </p>
               </button>
+
+              <div className="mt-auto flex justify-end pt-3">
+                <button
+                  type="button"
+                  aria-label={`Preview ${sound.name}`}
+                  className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-astraya-border bg-astraya-surface-soft text-astraya-text transition-all duration-300 ease-out hover:border-astraya-accent"
+                >
+                  <Play size={12} fill="currentColor" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

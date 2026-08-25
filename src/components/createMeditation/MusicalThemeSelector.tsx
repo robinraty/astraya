@@ -14,7 +14,7 @@ function MusicalThemeSelector() {
   };
 
   return (
-    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/70 p-4 shadow-astraya-card">
+    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 backdrop-blur-sm p-4 shadow-astraya-card">
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
           Musical Theme
@@ -52,7 +52,7 @@ function MusicalThemeSelector() {
       >
         {/* Artwork du theme musical actuellement selectionne */}
         <img
-          src={`${import.meta.env.BASE_URL}images/presets-artworks/astraya-artwork-moon-piano.png`}
+          src={`${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-3.png`}
           alt="Moon Piano"
           className="h-14 w-14 shrink-0 rounded-xl object-cover"
         />
