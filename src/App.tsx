@@ -14,7 +14,6 @@ import Library from "./pages/Library";
 import MeditationSession from "./pages/MeditationSession";
 
 function App() {
-  const baseUrl = import.meta.env.BASE_URL;
   const location = useLocation();
 
   const isMeditationSession =
@@ -32,24 +31,29 @@ function App() {
   }
 
   return (
-    <div className="relative min-h-dvh bg-astraya-background text-astraya-text">
-      {/* Background mobile */}
+    <div className="relative min-h-dvh overflow-hidden bg-astraya-background text-astraya-text">
+      {/* Background atmosphérique léger */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-sm md:hidden"
+        className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(rgb(5 8 22 / 30%), rgb(5 8 22 / 42%)), url("${baseUrl}images/background-images/astraya-background-mobile.png")`,
+          backgroundImage: `
+            radial-gradient(
+              circle at 25% 30%,
+              rgb(67 97 190 / 14%) 0%,
+              rgb(67 97 190 / 6%) 24%,
+              transparent 52%
+            ),
+            radial-gradient(
+              circle at 78% 72%,
+              rgb(98 72 190 / 12%) 0%,
+              rgb(98 72 190 / 5%) 26%,
+              transparent 55%
+            )
+          `,
         }}
       />
 
-      {/* Background desktop */}
-      <div
-        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat blur-sm md:block"
-        style={{
-          backgroundImage: `linear-gradient(rgb(5 8 22 / 30%), rgb(5 8 22 / 42%)), url("${baseUrl}images/background-images/astraya-background-desktop.png")`,
-        }}
-      />
-
-      {/* Contenu de l'app au-dessus du background */}
+      {/* Contenu de l'app */}
       <div className="relative mx-auto min-h-dvh w-full max-w-md px-4">
         <header className="pt-5 pb-2">
           <Header />

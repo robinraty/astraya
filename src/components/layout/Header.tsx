@@ -4,12 +4,11 @@ function Header() {
       <div />
 
       <div className="relative translate-x-1">
-        {/* LOGO Astraya en absolute pour que typo soit centered */}
-        <img
+        {/* <img
           src={`${import.meta.env.BASE_URL}images/logo-astraya.png`}
           alt=""
           className="absolute right-full top-1/2 mr-1.5 h-9 w-auto -translate-y-1/2"
-        />
+        /> */}
 
         {/* TYPO Astraya */}
         <h1 className="font-astraya-brand text-[1.65rem] font-normal tracking-[0.03em] text-astraya-brand">
