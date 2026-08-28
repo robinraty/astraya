@@ -3,9 +3,9 @@ import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
 type SoundSource = "presets" | "creations";
 
-// Un SoundItem est un objet qui doit avoir ces quatre propriétés,
-// et TypeScript vérifie leur type.
-type SoundItem = {
+// Un SoundItem représente une méditation disponible dans le carrousel.
+// On exporte le type pour pouvoir aussi l'utiliser dans MeditationSetup.
+export type SoundItem = {
   id: string;
   name: string;
   description: string;
@@ -59,9 +59,13 @@ const myCreations: SoundItem[] = [
 
 type SoundCarouselProps = {
   source: SoundSource;
+  onSoundChange: (sound: SoundItem) => void;
 };
 
-function SoundCarousel({ source }: SoundCarouselProps) {
+function SoundCarousel({
+  source,
+  onSoundChange,
+}: SoundCarouselProps) {
   const [selectedSound, setSelectedSound] =
     useState<string>("moon-piano");
 
@@ -123,6 +127,11 @@ function SoundCarousel({ source }: SoundCarouselProps) {
     });
   };
 
+  const handleSoundSelection = (sound: SoundItem) => {
+    setSelectedSound(sound.id);
+    onSoundChange(sound);
+  };
+
   useEffect(() => {
     updateScrollButtons();
 
@@ -141,6 +150,14 @@ function SoundCarousel({ source }: SoundCarouselProps) {
 
   useEffect(() => {
     const carousel = carouselRef.current;
+    const firstSound = sounds[0];
+
+    if (!firstSound) {
+      return;
+    }
+
+    setSelectedSound(firstSound.id);
+    onSoundChange(firstSound);
 
     if (!carousel) {
       return;
@@ -152,7 +169,7 @@ function SoundCarousel({ source }: SoundCarouselProps) {
     });
 
     updateScrollButtons();
-  }, [source]);
+  }, [source, onSoundChange]);
 
   return (
     <section className="min-w-0">
@@ -213,7 +230,7 @@ function SoundCarousel({ source }: SoundCarouselProps) {
             >
               <button
                 type="button"
-                onClick={() => setSelectedSound(sound.id)}
+                onClick={() => handleSoundSelection(sound)}
                 className="w-full cursor-pointer text-left"
               >
                 <img
