@@ -11,13 +11,13 @@ function AtmosphereSelector() {
   // Quand je clique sur Deep ou Airy :
   // 1. je selectionne l'atmosphere
   // 2. si Atmosphere etait OFF, je le reactive automatiquement
-  const handleAtmosphereSelect = (atmosphere: string) => {
+  const handleAtmosphereSelect = (atmosphere) => {
     setSelectedAtmosphere(atmosphere);
     setIsAtmosphereEnabled(true);
   };
 
   // Fonction qui retourne les classes du bouton Deep ou Airy
-  const getButtonClass = (atmosphere: string) => {
+  const getButtonClass = (atmosphere) => {
     const isSelected = selectedAtmosphere === atmosphere;
 
     // Si toute la section Atmosphere est OFF,

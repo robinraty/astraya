@@ -9,7 +9,7 @@ function PitchSelector() {
   //
   // pitch = la valeur du bouton qu'on est en train de verifier
   // Exemple : "dark", "natural" ou "bright"
-  const getButtonClass = (pitch: string) => {
+  const getButtonClass = (pitch) => {
     const isSelected = selectedPitch === pitch;
 
     return `

@@ -1,18 +1,10 @@
-type SoundSource = "presets" | "creations";
-
-// Ici on décrit les props que le composant a le droit de recevoir
-type SoundSourceSelectorProps = {
-  selectedSource: SoundSource;
-  onSourceChange: (source: SoundSource) => void;
-};
-
 function SoundSourceSelector({
   selectedSource,
   onSourceChange,
-}: SoundSourceSelectorProps) {
+}) {
   // Fonction qui retourne les classes du bouton
   // selon la source actuellement sélectionnée
-  const getButtonClass = (source: SoundSource) => {
+  const getButtonClass = (source) => {
     const isSelected = selectedSource === source;
 
     return `

@@ -2,12 +2,6 @@ import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 import SessionPlayer from "../components/meditationSession/SessionPlayer";
-import type { SoundItem } from "../components/meditationSetup/SoundCarousel";
-
-type MeditationSessionState = {
-  meditation: SoundItem;
-  duration: number;
-};
 
 function MeditationSession() {
   const location = useLocation();
@@ -15,8 +9,7 @@ function MeditationSession() {
   const [isExitMenuOpen, setIsExitMenuOpen] =
     useState(false);
 
-  const state =
-    location.state as MeditationSessionState | null;
+  const state = location.state;
 
   if (!state) {
     return <Navigate to="/meditate" replace />;
@@ -30,7 +23,8 @@ function MeditationSession() {
       <div
         className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out ${
           isExitMenuOpen
-          // Ca c'est l'animation de blur quand on appuye sur pause pendant une meditation. On floute JUSTE l'artwork.
+            // Ca c'est l'animation de blur quand on appuye sur pause pendant une meditation.
+            // On floute JUSTE l'artwork.
             ? "scale-105 blur-md"
             : "scale-100 blur-0"
         }`}

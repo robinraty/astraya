@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Clock3 } from "lucide-react";
 
-type DurationSelectorProps = {
-  selectedDuration: number;
-  onDurationChange: (duration: number) => void;
-};
-
 function DurationSelector({
   selectedDuration,
   onDurationChange,
-}: DurationSelectorProps) {
+}) {
   const durations = [5, 10, 15, 20, 30, 45];
 
   const customDurations = Array.from(
@@ -20,7 +15,7 @@ function DurationSelector({
   const [isCustomActive, setIsCustomActive] =
     useState(false);
 
-  const customPickerRef = useRef<HTMLDivElement>(null);
+  const customPickerRef = useRef(null);
 
   const itemWidth = 64;
 

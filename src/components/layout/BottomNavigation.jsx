@@ -32,7 +32,7 @@ function BottomNavigation() {
           <span className="text-sm">Create</span>
         </NavLink>
 
-        {/* Même logique pour la page Library */}
+        {/* Meme logique pour la page Library */}
         <NavLink
           to="/library"
           className={({ isActive }) =>

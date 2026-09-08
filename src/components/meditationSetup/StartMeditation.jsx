@@ -1,16 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
-import type { SoundItem } from "./SoundCarousel";
-
-type StartMeditationProps = {
-  selectedMeditation: SoundItem | null;
-  selectedDuration: number;
-};
-
 function StartMedititation({
   selectedMeditation,
   selectedDuration,
-}: StartMeditationProps) {
+}) {
   const navigate = useNavigate();
 
   const handleStartMeditation = () => {

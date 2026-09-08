@@ -55,7 +55,7 @@ function App() {
 
       {/* Contenu de l'app */}
       <div className="relative mx-auto min-h-dvh w-full max-w-md px-4">
-        <header className="pt-5 pb-2">
+        <header className="pb-2 pt-5">
           <Header />
         </header>
 

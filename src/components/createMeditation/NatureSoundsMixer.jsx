@@ -36,9 +36,9 @@ function NatureSoundsMixer() {
   // setVolume = fonction qui change le volume actuel
   // setLastVolume = fonction qui memorise le dernier volume > 0
   const handleVolumeChange = (
-    newVolume: number,
-    setVolume: (value: number) => void,
-    setLastVolume: (value: number) => void
+    newVolume,
+    setVolume,
+    setLastVolume
   ) => {
     setVolume(newVolume);
 
@@ -55,9 +55,9 @@ function NatureSoundsMixer() {
   // Si le son joue => volume passe a 0
   // Si le son est coupe => on recupere son ancien volume
   const handleToggle = (
-    volume: number,
-    lastVolume: number,
-    setVolume: (value: number) => void
+    volume,
+    lastVolume,
+    setVolume
   ) => {
     if (volume > 0) {
       setVolume(0);
@@ -70,7 +70,7 @@ function NatureSoundsMixer() {
   //
   // volume > 0 = toggle actif avec bleu + glow
   // volume = 0 = toggle eteint
-  const getToggleClass = (volume: number) => {
+  const getToggleClass = (volume) => {
     const isEnabled = volume > 0;
 
     return `
@@ -95,7 +95,7 @@ function NatureSoundsMixer() {
   // translate-x-5 = ON
   //
   // transition-transform permet au rond de GLISSER en 300ms
-  const getToggleThumbClass = (volume: number) => {
+  const getToggleThumbClass = (volume) => {
     const isEnabled = volume > 0;
 
     return `
@@ -116,7 +116,7 @@ function NatureSoundsMixer() {
     "grid grid-cols-[76px_1fr_36px_48px] items-center gap-2";
 
   return (
-    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 backdrop-blur-sm px-4 py-4 shadow-astraya-card">
+    <section className="rounded-astraya-card border border-astraya-border bg-astraya-surface/60 px-4 py-4 shadow-astraya-card backdrop-blur-sm">
       <div className="mb-4">
         <p className="text-xs uppercase tracking-[0.2em] text-astraya-accent-light">
           Nature Sounds
@@ -151,7 +151,6 @@ function NatureSoundsMixer() {
                 setRainLastVolume
               )
             }
-            // A 0%, le slider devient juste un peu plus discret
             className={`w-full min-w-0 cursor-pointer accent-astraya-accent transition-opacity duration-300 ${
               rainVolume === 0 ? "opacity-40" : "opacity-100"
             }`}

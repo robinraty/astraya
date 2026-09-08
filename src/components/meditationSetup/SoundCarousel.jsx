@@ -1,19 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
-type SoundSource = "presets" | "creations";
-
-// Un SoundItem représente une méditation disponible dans le carrousel.
-// On exporte le type pour pouvoir aussi l'utiliser dans MeditationSetup.
-export type SoundItem = {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-};
-
 // Presets officiels Astraya
-const astrayaPresets: SoundItem[] = [
+const astrayaPresets = [
   {
     id: "moon-piano",
     name: "Moon Piano",
@@ -42,7 +31,7 @@ const astrayaPresets: SoundItem[] = [
 
 // Données temporaires pour représenter les créations utilisateur.
 // Plus tard, elles viendront probablement du backend.
-const myCreations: SoundItem[] = [
+const myCreations = [
   {
     id: "creation-1",
     name: "Night Focus",
@@ -57,22 +46,17 @@ const myCreations: SoundItem[] = [
   },
 ];
 
-type SoundCarouselProps = {
-  source: SoundSource;
-  onSoundChange: (sound: SoundItem) => void;
-};
-
 function SoundCarousel({
   source,
   onSoundChange,
-}: SoundCarouselProps) {
+}) {
   const [selectedSound, setSelectedSound] =
-    useState<string>("moon-piano");
+    useState("moon-piano");
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef(null);
 
   const sounds =
     source === "presets" ? astrayaPresets : myCreations;
@@ -97,17 +81,14 @@ function SoundCarousel({
     );
   };
 
-  const handleCarouselScroll = (
-    direction: "left" | "right",
-  ) => {
+  const handleCarouselScroll = (direction) => {
     const carousel = carouselRef.current;
 
     if (!carousel) {
       return;
     }
 
-    const firstCard =
-      carousel.firstElementChild as HTMLElement | null;
+    const firstCard = carousel.firstElementChild;
 
     if (!firstCard) {
       return;
@@ -127,7 +108,7 @@ function SoundCarousel({
     });
   };
 
-  const handleSoundSelection = (sound: SoundItem) => {
+  const handleSoundSelection = (sound) => {
     setSelectedSound(sound.id);
     onSoundChange(sound);
   };

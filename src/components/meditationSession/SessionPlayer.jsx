@@ -2,17 +2,11 @@ import { useEffect, useState } from "react";
 import { Pause, Play, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type SessionPlayerProps = {
-  meditationName: string;
-  duration: number;
-  onExitMenuChange: (isOpen: boolean) => void;
-};
-
 function SessionPlayer({
   meditationName,
   duration,
   onExitMenuChange,
-}: SessionPlayerProps) {
+}) {
   const navigate = useNavigate();
 
   // Indique si la méditation est actuellement en lecture.
