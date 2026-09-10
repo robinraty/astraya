@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Pause, Play, Save } from "lucide-react";
 
-function MeditationActions() {
-  const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
-
+function MeditationActions({
+  isPreviewPlaying,
+  setIsPreviewPlaying,
+}) {
   return (
     <section className="flex items-center justify-between gap-3">
       <button

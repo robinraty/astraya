@@ -1,14 +1,4 @@
-import { useState } from "react";
-
-function PitchSelector() {
-  // Pitch actuellement selectionne
-  // La valeur de depart est "dark"
-  const [selectedPitch, setSelectedPitch] = useState("dark");
-
-  // Fonction qui retourne les classes du bouton selon son etat
-  //
-  // pitch = la valeur du bouton qu'on est en train de verifier
-  // Exemple : "dark", "natural" ou "bright"
+function PitchSelector({ selectedPitch, setSelectedPitch }) {
   const getButtonClass = (pitch) => {
     const isSelected = selectedPitch === pitch;
 
@@ -29,10 +19,6 @@ function PitchSelector() {
         Pitch / Mood
       </p>
 
-      {/*
-        Les 3 boutons prennent chacun 1 colonne
-        donc ils font automatiquement 1/3 de la largeur
-      */}
       <div className="grid grid-cols-3">
         <button
           type="button"
@@ -42,13 +28,6 @@ function PitchSelector() {
           Dark
         </button>
 
-        {/*
-          -ml-px = on decale le bouton de 1px vers la gauche
-
-          Pourquoi ?
-          Parce que les boutons sont colles et ont chacun une border de 1px.
-          Sans ca, entre deux boutons on aurait visuellement 2px de border.
-        */}
         <button
           type="button"
           onClick={() => setSelectedPitch("natural")}

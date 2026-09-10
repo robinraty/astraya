@@ -7,34 +7,24 @@ import {
   Waves,
 } from "lucide-react";
 
-function NatureSoundsMixer() {
-  // Volume ACTUEL de chaque son
-  // C'est cette valeur qui est directement liee au slider
-  const [rainVolume, setRainVolume] = useState(35);
-  const [forestVolume, setForestVolume] = useState(20);
-  const [birdsVolume, setBirdsVolume] = useState(25);
-  const [riverVolume, setRiverVolume] = useState(0);
-  const [wavesVolume, setWavesVolume] = useState(40);
-
-  // Dernier volume utilise avant de couper le son
-  //
-  // Exemple :
-  // Rain est a 35%
-  // je coupe avec le toggle => Rain passe a 0
-  // je rallume => Rain revient a 35%
-  //
-  // Sans ca, on ne saurait pas a quel volume revenir apres avoir coupe un son
+function NatureSoundsMixer({
+  rainVolume,
+  setRainVolume,
+  forestVolume,
+  setForestVolume,
+  birdsVolume,
+  setBirdsVolume,
+  riverVolume,
+  setRiverVolume,
+  wavesVolume,
+  setWavesVolume,
+}) {
   const [rainLastVolume, setRainLastVolume] = useState(35);
   const [forestLastVolume, setForestLastVolume] = useState(20);
   const [birdsLastVolume, setBirdsLastVolume] = useState(25);
   const [riverLastVolume, setRiverLastVolume] = useState(50);
   const [wavesLastVolume, setWavesLastVolume] = useState(40);
 
-  // Fonction reutilisee par les 5 sliders
-  //
-  // newVolume = nouvelle valeur du slider
-  // setVolume = fonction qui change le volume actuel
-  // setLastVolume = fonction qui memorise le dernier volume > 0
   const handleVolumeChange = (
     newVolume,
     setVolume,
@@ -42,18 +32,11 @@ function NatureSoundsMixer() {
   ) => {
     setVolume(newVolume);
 
-    // IMPORTANT :
-    // si je descends le slider a 0,
-    // je ne veux PAS remplacer mon ancien volume memorise par 0
     if (newVolume > 0) {
       setLastVolume(newVolume);
     }
   };
 
-  // Fonction reutilisee par les 5 toggles
-  //
-  // Si le son joue => volume passe a 0
-  // Si le son est coupe => on recupere son ancien volume
   const handleToggle = (
     volume,
     lastVolume,
@@ -66,10 +49,6 @@ function NatureSoundsMixer() {
     }
   };
 
-  // Style du FOND du toggle
-  //
-  // volume > 0 = toggle actif avec bleu + glow
-  // volume = 0 = toggle eteint
   const getToggleClass = (volume) => {
     const isEnabled = volume > 0;
 
@@ -84,17 +63,6 @@ function NatureSoundsMixer() {
     `;
   };
 
-  // Style du petit ROND BLANC a l'interieur du toggle
-  //
-  // top-1/2 = on le place a 50% de la hauteur du toggle
-  // -translate-y-1/2 = on le remonte de la moitie de SA hauteur
-  //
-  // Donc il est vraiment centre verticalement.
-  //
-  // translate-x-0 = OFF
-  // translate-x-5 = ON
-  //
-  // transition-transform permet au rond de GLISSER en 300ms
   const getToggleThumbClass = (volume) => {
     const isEnabled = volume > 0;
 
@@ -106,12 +74,6 @@ function NatureSoundsMixer() {
     `;
   };
 
-  // Meme grille pour les 5 sons
-  //
-  // 76px = icone + nom
-  // 1fr = slider qui prend tout l'espace restant
-  // 36px = pourcentage
-  // 48px = toggle
   const rowClass =
     "grid grid-cols-[76px_1fr_36px_48px] items-center gap-2";
 
@@ -128,7 +90,6 @@ function NatureSoundsMixer() {
       </div>
 
       <div className="space-y-4">
-        {/* RAIN */}
         <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <CloudRain
@@ -172,7 +133,6 @@ function NatureSoundsMixer() {
           </button>
         </div>
 
-        {/* FOREST */}
         <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Trees
@@ -208,7 +168,11 @@ function NatureSoundsMixer() {
             type="button"
             aria-label="Toggle forest"
             onClick={() =>
-              handleToggle(forestVolume, forestLastVolume, setForestVolume)
+              handleToggle(
+                forestVolume,
+                forestLastVolume,
+                setForestVolume
+              )
             }
             className={getToggleClass(forestVolume)}
           >
@@ -216,7 +180,6 @@ function NatureSoundsMixer() {
           </button>
         </div>
 
-        {/* BIRDS */}
         <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Bird
@@ -252,7 +215,11 @@ function NatureSoundsMixer() {
             type="button"
             aria-label="Toggle birds"
             onClick={() =>
-              handleToggle(birdsVolume, birdsLastVolume, setBirdsVolume)
+              handleToggle(
+                birdsVolume,
+                birdsLastVolume,
+                setBirdsVolume
+              )
             }
             className={getToggleClass(birdsVolume)}
           >
@@ -260,7 +227,6 @@ function NatureSoundsMixer() {
           </button>
         </div>
 
-        {/* RIVER */}
         <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <ZodiacAquarius
@@ -296,7 +262,11 @@ function NatureSoundsMixer() {
             type="button"
             aria-label="Toggle river"
             onClick={() =>
-              handleToggle(riverVolume, riverLastVolume, setRiverVolume)
+              handleToggle(
+                riverVolume,
+                riverLastVolume,
+                setRiverVolume
+              )
             }
             className={getToggleClass(riverVolume)}
           >
@@ -304,7 +274,6 @@ function NatureSoundsMixer() {
           </button>
         </div>
 
-        {/* WAVES */}
         <div className={rowClass}>
           <div className="flex items-center gap-2 text-astraya-text">
             <Waves
@@ -340,7 +309,11 @@ function NatureSoundsMixer() {
             type="button"
             aria-label="Toggle waves"
             onClick={() =>
-              handleToggle(wavesVolume, wavesLastVolume, setWavesVolume)
+              handleToggle(
+                wavesVolume,
+                wavesLastVolume,
+                setWavesVolume
+              )
             }
             className={getToggleClass(wavesVolume)}
           >
