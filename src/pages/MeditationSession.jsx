@@ -11,20 +11,25 @@ function MeditationSession() {
 
   const state = location.state;
 
+  // Si quelqu'un arrive directement sur /session
+  // sans avoir choisi de meditation, on retourne vers Meditate.
   if (!state) {
     return <Navigate to="/meditate" replace />;
   }
 
-  const { meditation, duration } = state;
+  // audioConfig contient le mix audio choisi.
+  const {
+    meditation,
+    duration,
+    audioConfig,
+  } = state;
 
   return (
     <main className="relative h-dvh w-full overflow-hidden">
-      {/* Artwork de la méditation */}
+      {/* Artwork de la meditation */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out ${
           isExitMenuOpen
-            // Ca c'est l'animation de blur quand on appuye sur pause pendant une meditation.
-            // On floute JUSTE l'artwork.
             ? "scale-105 blur-md"
             : "scale-100 blur-0"
         }`}
@@ -45,6 +50,7 @@ function MeditationSession() {
       <SessionPlayer
         meditationName={meditation.name}
         duration={duration}
+        audioConfig={audioConfig}
         onExitMenuChange={setIsExitMenuOpen}
       />
     </main>

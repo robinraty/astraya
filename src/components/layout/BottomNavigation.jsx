@@ -3,10 +3,8 @@ import { NavLink } from "react-router-dom";
 
 function BottomNavigation() {
   return (
-    // Navigation fixe en bas de l'écran
     <nav className="fixed bottom-0 left-0 right-0 border-t border-astraya-border bg-astraya-background">
-      <div className="mx-auto flex max-w-md items-center justify-around px-4 py-3">
-        {/* NavLink navigue vers une route et sait si elle est active */}
+      <div className="mx-auto flex w-full max-w-sm items-center justify-between px-4 py-3">
         <NavLink
           to="/meditate"
           className={({ isActive }) =>
@@ -19,7 +17,6 @@ function BottomNavigation() {
           <span className="text-sm">Meditate</span>
         </NavLink>
 
-        {/* isActive vaut true quand l'URL actuelle est /create */}
         <NavLink
           to="/create"
           className={({ isActive }) =>
@@ -32,7 +29,6 @@ function BottomNavigation() {
           <span className="text-sm">Create</span>
         </NavLink>
 
-        {/* Meme logique pour la page Library */}
         <NavLink
           to="/library"
           className={({ isActive }) =>
@@ -42,7 +38,7 @@ function BottomNavigation() {
           }
         >
           <Headphones size={20} />
-          <span className="text-sm">Library</span>
+          <span className="text-sm">My Creations</span>
         </NavLink>
       </div>
     </nav>

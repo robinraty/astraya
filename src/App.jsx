@@ -10,7 +10,7 @@ import BottomNavigation from "./components/layout/BottomNavigation";
 
 import CreateMeditation from "./pages/CreateMeditation";
 import MeditationSetup from "./pages/MeditationSetup";
-import Library from "./pages/Library";
+import Library from "./pages/MyCreations";
 import MeditationSession from "./pages/MeditationSession";
 
 function App() {

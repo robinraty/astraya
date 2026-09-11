@@ -1,8 +1,7 @@
-import { useState } from "react";
-
 import LibraryCard from "../components/library/LibraryCard";
-import LibrarySourceSelector from "../components/library/LibrarySourceSelector";
 
+// Pour le moment, les creations sont encore ecrites en dur.
+// Plus tard, elles viendront du backend / de la base de donnees.
 const myCreations = [
   {
     id: "night-calm",
@@ -24,69 +23,29 @@ const myCreations = [
   },
 ];
 
-const astrayaPresets = [
-  {
-    id: "moon-piano",
-    name: "Moon Piano",
-    description: "Soft and minimal piano phrases",
-    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-1.png`,
-  },
-  {
-    id: "forest-dream",
-    name: "Forest Dream",
-    description: "Deep forest atmosphere",
-    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-2.png`,
-  },
-  {
-    id: "cosmic-waves",
-    name: "Cosmic Waves",
-    description: "Ambient waves and soft textures",
-    image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-3.png`,
-  },
-];
-
 function Library() {
-  const [selectedSource, setSelectedSource] = useState("creations");
-
-  const meditations =
-    selectedSource === "creations"
-      ? myCreations
-      : astrayaPresets;
-
-  const sectionTitle =
-    selectedSource === "creations"
-      ? "Saved Meditations"
-      : "Astraya Presets";
-
-  const sectionDescription =
-    selectedSource === "creations"
-      ? "Find and replay your personal soundscapes."
-      : "Explore meditation presets created by Astraya.";
-
   return (
     <div className="px-2 py-5 text-astraya-text">
+      {/* Conteneur principal de la page */}
       <div className="mx-auto flex w-full max-w-md flex-col gap-5">
+        {/* Introduction de la page */}
         <section>
           <p className="text-xs uppercase tracking-[0.2em] text-astraya-muted">
-            Your Library
+            My Creations
           </p>
 
           <h1 className="mt-2 text-2xl font-medium text-astraya-text">
-            {sectionTitle}
+            Saved Meditations
           </h1>
 
           <p className="mt-1 text-sm text-astraya-muted">
-            {sectionDescription}
+            Find and replay your personal soundscapes.
           </p>
         </section>
 
-        <LibrarySourceSelector
-          selectedSource={selectedSource}
-          onSourceChange={setSelectedSource}
-        />
-
+        {/* Liste des meditations creees et sauvegardees par l'utilisateur */}
         <section className="flex flex-col gap-3">
-          {meditations.map((meditation) => (
+          {myCreations.map((meditation) => (
             <LibraryCard
               key={meditation.id}
               name={meditation.name}
