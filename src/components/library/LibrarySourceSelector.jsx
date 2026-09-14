@@ -2,6 +2,8 @@ function LibrarySourceSelector({
   selectedSource,
   onSourceChange,
 }) {
+  // Génère les classes CSS d'un bouton
+  // selon qu'il est sélectionné ou non.
   const getButtonClass = (source) => {
     const isSelected = selectedSource === source;
 
@@ -19,18 +21,28 @@ function LibrarySourceSelector({
   return (
     <section>
       <div className="grid grid-cols-2">
+        {/* Sélectionne les créations personnelles */}
         <button
           type="button"
-          onClick={() => onSourceChange("creations")}
-          className={`${getButtonClass("creations")} rounded-l-astraya-control`}
+          onClick={() =>
+            onSourceChange("creations")
+          }
+          className={`${getButtonClass(
+            "creations"
+          )} rounded-l-astraya-control`}
         >
           My Creations
         </button>
 
+        {/* Sélectionne les presets officiels Astraya */}
         <button
           type="button"
-          onClick={() => onSourceChange("presets")}
-          className={`${getButtonClass("presets")} -ml-px rounded-r-astraya-control`}
+          onClick={() =>
+            onSourceChange("presets")
+          }
+          className={`${getButtonClass(
+            "presets"
+          )} -ml-px rounded-r-astraya-control`}
         >
           Astraya Presets
         </button>

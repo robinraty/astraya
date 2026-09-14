@@ -1,30 +1,39 @@
 import { useNavigate } from "react-router-dom";
 
-function StartMedititation({
+function StartMeditation({
   selectedMeditation,
   selectedDuration,
   audioConfig = null,
 }) {
+  // Permet de changer de route avec React Router.
   const navigate = useNavigate();
 
-  // Lance la meditation choisie.
+  // Lance la méditation choisie.
   const handleStartMeditation = () => {
-    // Si aucune meditation n'est selectionnee,
-    // on ne fait rien.
+    // Si aucune méditation n'est sélectionnée,
+    // le bouton ne fait rien.
     if (!selectedMeditation) {
       return;
     }
 
-    // Si un audioConfig est passe directement en prop
-    // (par exemple depuis Create Meditation),
-    // on l'utilise.
+    // Une configuration audio peut arriver de deux manières.
     //
-    // Sinon, on prend celui contenu dans le preset selectionne.
+    // Cas 1 :
+    // Create Meditation envoie directement audioConfig.
+    //
+    // Cas 2 :
+    // Un preset Astraya possède déjà son audioConfig.
+    //
+    // On utilise donc la première valeur disponible.
     const selectedAudioConfig =
-      audioConfig || selectedMeditation.audioConfig || null;
+      audioConfig ||
+      selectedMeditation.audioConfig ||
+      null;
 
-    // On envoie toutes les informations necessaires
-    // a la page /session.
+    // Change de page vers /session.
+    //
+    // Avec "state", on transmet les informations
+    // sans les afficher dans l'URL.
     navigate("/session", {
       state: {
         meditation: selectedMeditation,
@@ -42,7 +51,7 @@ function StartMedititation({
         disabled={!selectedMeditation}
         className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-astraya-control border border-astraya-accent/65 bg-astraya-surface/30 px-4 py-4 text-base font-medium text-astraya-text shadow-[0_0_28px_rgb(111_157_255_/_0.16)] backdrop-blur-sm transition-all duration-500 ease-out hover:border-astraya-accent hover:bg-astraya-accent/8 hover:shadow-[0_0_38px_rgb(111_157_255_/_0.24)] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {/* Petit glow anime derriere le texte */}
+        {/* Petit glow animé derrière le texte */}
         <span className="pointer-events-none absolute inset-0 animate-[pulse_5s_ease-in-out_infinite] bg-[radial-gradient(circle_at_center,rgb(111_157_255_/_0.12),transparent_68%)]" />
 
         {/* Texte du bouton */}
@@ -54,4 +63,4 @@ function StartMedititation({
   );
 }
 
-export default StartMedititation;
+export default StartMeditation;

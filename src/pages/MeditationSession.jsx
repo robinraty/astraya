@@ -1,23 +1,42 @@
 import { useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 
 import SessionPlayer from "../components/meditationSession/SessionPlayer";
 
 function MeditationSession() {
+  // useLocation permet notamment de récupérer
+  // les données envoyées avec navigate(..., { state }).
   const location = useLocation();
 
+  // Indique si la fenêtre de sortie est ouverte.
+  //
+  // On l'utilise aussi pour modifier visuellement
+  // l'arrière-plan de la Session.
   const [isExitMenuOpen, setIsExitMenuOpen] =
     useState(false);
 
+  // Données reçues depuis la page précédente.
+  //
+  // Elles peuvent venir :
+  // - d'un preset Astraya
+  // - de Create Meditation
+  // - maintenant d'une création MongoDB
   const state = location.state;
 
-  // Si quelqu'un arrive directement sur /session
-  // sans avoir choisi de meditation, on retourne vers Meditate.
+  // Si quelqu'un tape directement /session
+  // sans avoir choisi de méditation,
+  // aucune donnée n'existe.
+  //
+  // On le renvoie donc vers Meditate.
   if (!state) {
     return <Navigate to="/meditate" replace />;
   }
 
-  // audioConfig contient le mix audio choisi.
+  // Récupère les trois informations importantes
+  // envoyées vers la Session.
   const {
     meditation,
     duration,
@@ -26,7 +45,7 @@ function MeditationSession() {
 
   return (
     <main className="relative h-dvh w-full overflow-hidden">
-      {/* Artwork de la meditation */}
+      {/* Artwork de la méditation */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out ${
           isExitMenuOpen
@@ -47,6 +66,8 @@ function MeditationSession() {
         }`}
       />
 
+      {/* SessionPlayer reçoit les données
+          et gère réellement la méditation */}
       <SessionPlayer
         meditationName={meditation.name}
         duration={duration}

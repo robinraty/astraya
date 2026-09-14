@@ -3,6 +3,8 @@ import { Pause, Play, Save } from "lucide-react";
 function MeditationActions({
   isPreviewPlaying,
   setIsPreviewPlaying,
+  onSave,
+  isSaving,
 }) {
   return (
     <section className="flex items-center justify-between gap-3">
@@ -28,10 +30,14 @@ function MeditationActions({
 
       <button
         type="button"
-        className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-astraya-control border border-astraya-border bg-astraya-surface/30 px-4 py-3 text-sm text-astraya-muted backdrop-blur-sm transition hover:border-astraya-accent hover:bg-astraya-accent/10 hover:text-astraya-text hover:shadow-astraya-selected"
+        onClick={onSave}
+        disabled={isSaving}
+        className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-astraya-control border border-astraya-border bg-astraya-surface/30 px-4 py-3 text-sm text-astraya-muted backdrop-blur-sm transition hover:border-astraya-accent hover:bg-astraya-accent/10 hover:text-astraya-text hover:shadow-astraya-selected disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Save size={18} strokeWidth={1.5} />
-        <span>Save</span>
+
+        {/* Le texte change pendant l'enregistrement */}
+        <span>{isSaving ? "Saving..." : "Save"}</span>
       </button>
     </section>
   );

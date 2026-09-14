@@ -5,6 +5,7 @@ import AtmosphereSelector from "../components/createMeditation/AtmosphereSelecto
 import MusicalThemeSelector from "../components/createMeditation/MusicalThemeSelector";
 import NatureSoundsMixer from "../components/createMeditation/NatureSoundsMixer";
 import MeditationActions from "../components/createMeditation/MeditationActions";
+import CreationName from "../components/createMeditation/CreationName";
 
 import DurationSelector from "../components/meditationSetup/DurationSelector";
 import StartMeditation from "../components/meditationSetup/StartMeditation";
@@ -13,14 +14,22 @@ function CreateMeditation() {
   // Est-ce que la preview est en train de jouer ?
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
-  // Reglages principaux du pad.
+  // Nom de la création utilisateur.
+  // Ce nom sera sauvegardé dans MongoDB avec l'audioConfig.
+  const [creationName, setCreationName] = useState("Moon Lake");
+
+  // Indique si une sauvegarde est actuellement en cours.
+  // Cela permet notamment de désactiver temporairement le bouton Save.
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Réglages principaux du pad.
   const [selectedPitch, setSelectedPitch] = useState("bright");
   const [selectedAtmosphere, setSelectedAtmosphere] = useState("airy");
 
   // Le pad Atmosphere est actif de base.
   const [isAtmosphereEnabled, setIsAtmosphereEnabled] = useState(true);
 
-  // Le Musical Theme est desactive de base.
+  // Le Musical Theme est désactivé de base.
   const [isMusicalThemeEnabled, setIsMusicalThemeEnabled] = useState(false);
 
   // Volumes des sons de nature.
@@ -30,13 +39,15 @@ function CreateMeditation() {
   const [riverVolume, setRiverVolume] = useState(0);
   const [wavesVolume, setWavesVolume] = useState(0);
 
-  // Duree de meditation choisie.
-  // 15 minutes par defaut.
+  // Durée de méditation choisie.
+  // 15 minutes par défaut.
   const [selectedDuration, setSelectedDuration] = useState(15);
 
   // Configuration finale du mix.
   //
-  // C'est cet objet qui sera envoye a la page Session.
+  // Cet objet est utilisé à la fois :
+  // - pour lancer une vraie session
+  // - pour sauvegarder la création dans MongoDB
   const audioConfig = {
     pitch: selectedPitch,
     atmosphere: selectedAtmosphere,
@@ -51,10 +62,69 @@ function CreateMeditation() {
     },
   };
 
-  // Meditation temporaire utilisee pour afficher
-  // un nom et un artwork dans la Session.
+  // Envoie la création actuelle vers notre API Express.
+  const handleSaveCreation = async () => {
+    // Empêche d'enregistrer une création sans nom.
+    if (!creationName.trim()) {
+      alert("Please enter a creation name.");
+      return;
+    }
+
+    try {
+      // Indique que la sauvegarde commence.
+      setIsSaving(true);
+
+      // Envoie une requête POST à notre backend Express.
+      const response = await fetch(
+        "http://localhost:3000/creations",
+        {
+          method: "POST",
+
+          // Indique que les données envoyées sont du JSON.
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          // Transforme notre objet JavaScript en JSON
+          // pour pouvoir l'envoyer dans la requête HTTP.
+          body: JSON.stringify({
+            name: creationName.trim(),
+            audioConfig,
+          }),
+        }
+      );
+
+      // Si le serveur renvoie une erreur,
+      // on déclenche directement le catch.
+      if (!response.ok) {
+        throw new Error("Save failed");
+      }
+
+      // Récupère la création renvoyée par Express.
+      // Cette création contient notamment son _id MongoDB.
+      const savedCreation = await response.json();
+
+      // Permet de voir la création sauvegardée dans la console.
+      console.log("Creation saved:", savedCreation);
+
+      alert("Creation saved!");
+    } catch (error) {
+      console.error("Save error:", error);
+
+      alert("Unable to save creation.");
+    } finally {
+      // Cette partie se déclenche que la sauvegarde
+      // ait réussi ou échoué.
+      setIsSaving(false);
+    }
+  };
+
+  // Méditation temporaire utilisée par la Session.
+  //
+  // Le nom correspond maintenant au vrai nom choisi
+  // par l'utilisateur dans Create Meditation.
   const customMeditation = {
-    name: "Custom Meditation",
+    name: creationName,
     image: `${import.meta.env.BASE_URL}images/ambiant-images/astraya-background-3.png`,
   };
 
@@ -65,7 +135,7 @@ function CreateMeditation() {
   const audioOneRef = useRef(null);
   const audioTwoRef = useRef(null);
 
-  // Controle du volume des deux pads.
+  // Contrôle du volume des deux pads.
   const gainOneRef = useRef(null);
   const gainTwoRef = useRef(null);
 
@@ -73,7 +143,7 @@ function CreateMeditation() {
   const activeAudioRef = useRef(null);
   const inactiveAudioRef = useRef(null);
 
-  // Meme chose pour leurs volumes.
+  // Même chose pour leurs volumes.
   const activeGainRef = useRef(null);
   const inactiveGainRef = useRef(null);
 
@@ -81,25 +151,25 @@ function CreateMeditation() {
   const themeAudioOneRef = useRef(null);
   const themeAudioTwoRef = useRef(null);
 
-  // Controle du volume des deux themes.
+  // Contrôle du volume des deux thèmes.
   const themeGainOneRef = useRef(null);
   const themeGainTwoRef = useRef(null);
 
-  // Theme actif et theme disponible.
+  // Thème actif et thème disponible.
   const activeThemeAudioRef = useRef(null);
   const inactiveThemeAudioRef = useRef(null);
 
-  // Meme chose pour leurs volumes.
+  // Même chose pour leurs volumes.
   const activeThemeGainRef = useRef(null);
   const inactiveThemeGainRef = useRef(null);
 
   // Contient les 5 sons de nature.
   const natureAudioRef = useRef({});
 
-  // Contient les 5 controles de volume correspondants.
+  // Contient les 5 contrôles de volume correspondants.
   const natureGainRef = useRef({});
 
-  // Timers utilises par les transitions.
+  // Timers utilisés par les transitions.
   const crossfadeTimeoutRef = useRef(null);
   const themeCrossfadeTimeoutRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
@@ -841,9 +911,18 @@ function CreateMeditation() {
   return (
     <div className="px-2 py-5 text-astraya-text">
       <div className="mx-auto flex w-full max-w-md flex-col gap-5">
+        {/* Nom de la création sauvegardée */}
+        <CreationName
+          creationName={creationName}
+          setCreationName={setCreationName}
+        />
+
+        {/* Preview du mix + sauvegarde MongoDB */}
         <MeditationActions
           isPreviewPlaying={isPreviewPlaying}
           setIsPreviewPlaying={handlePreviewChange}
+          onSave={handleSaveCreation}
+          isSaving={isSaving}
         />
 
         <PitchSelector
@@ -876,7 +955,7 @@ function CreateMeditation() {
           setWavesVolume={setWavesVolume}
         />
 
-        {/* Duree de la vraie session */}
+        {/* Durée de la vraie session */}
         <DurationSelector
           selectedDuration={selectedDuration}
           onDurationChange={setSelectedDuration}
