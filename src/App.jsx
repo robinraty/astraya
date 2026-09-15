@@ -12,10 +12,13 @@ import CreateMeditation from "./pages/CreateMeditation";
 import MeditationSetup from "./pages/MeditationSetup";
 import Library from "./pages/MyCreations";
 import MeditationSession from "./pages/MeditationSession";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   const location = useLocation();
 
+  // La Session utilise un affichage complètement plein écran.
   const isMeditationSession =
     location.pathname === "/session";
 
@@ -53,7 +56,7 @@ function App() {
         }}
       />
 
-      {/* Contenu de l'app */}
+      {/* Contenu principal de l'application */}
       <div className="relative mx-auto min-h-dvh w-full max-w-md px-4">
         <header className="pb-2 pt-5">
           <Header />
@@ -61,11 +64,18 @@ function App() {
 
         <main className="pb-24">
           <Routes>
+            {/* Route par défaut */}
             <Route
               path="/"
-              element={<Navigate to="/meditate" replace />}
+              element={
+                <Navigate
+                  to="/meditate"
+                  replace
+                />
+              }
             />
 
+            {/* Pages principales */}
             <Route
               path="/meditate"
               element={<MeditationSetup />}
@@ -79,6 +89,17 @@ function App() {
             <Route
               path="/library"
               element={<Library />}
+            />
+
+            {/* Authentification */}
+            <Route
+              path="/login"
+              element={<Login />}
+            />
+
+            <Route
+              path="/register"
+              element={<Register />}
             />
           </Routes>
         </main>

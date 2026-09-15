@@ -2,10 +2,14 @@ function SoundSourceSelector({
   selectedSource,
   onSourceChange,
 }) {
-  // Fonction qui retourne les classes du bouton
-  // selon la source actuellement sélectionnée
-  const getButtonClass = (source) => {
-    const isSelected = selectedSource === source;
+  // Retourne les classes du bouton
+  // selon la source sélectionnée.
+  const getButtonClass = (
+    source
+  ) => {
+    const isSelected =
+      selectedSource ===
+      source;
 
     return `
       relative flex cursor-pointer items-center justify-center border px-4 py-4
@@ -24,20 +28,33 @@ function SoundSourceSelector({
         Choose your sound
       </p>
 
-      {/* Les 2 choix partagent la largeur 50 / 50 */}
+      {/* Les deux choix partagent
+          la largeur 50 / 50 */}
       <div className="grid grid-cols-2">
         <button
           type="button"
-          onClick={() => onSourceChange("presets")}
-          className={`${getButtonClass("presets")} rounded-l-astraya-control`}
+          onClick={() =>
+            onSourceChange(
+              "presets"
+            )
+          }
+          className={`${getButtonClass(
+            "presets"
+          )} rounded-l-astraya-control`}
         >
           Astraya Presets
         </button>
 
         <button
           type="button"
-          onClick={() => onSourceChange("creations")}
-          className={`${getButtonClass("creations")} -ml-px rounded-r-astraya-control`}
+          onClick={() =>
+            onSourceChange(
+              "creations"
+            )
+          }
+          className={`${getButtonClass(
+            "creations"
+          )} -ml-px rounded-r-astraya-control`}
         >
           My Creations
         </button>
