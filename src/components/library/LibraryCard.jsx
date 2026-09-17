@@ -17,18 +17,18 @@ function LibraryCard({
   isPreviewPlaying,
   onPreview,
   onMeditate,
+  onDelete,
 }) {
-  // Indique si le petit menu des trois points est ouvert.
+  // Indique si le petit menu
+  // des trois points est ouvert.
   const [
     isMenuOpen,
     setIsMenuOpen,
   ] = useState(false);
 
   // Référence vers le menu.
-  //
-  // Elle permet de détecter un clic
-  // en dehors du menu pour le fermer.
-  const menuRef = useRef(null);
+  const menuRef =
+    useRef(null);
 
   // --------------------------------------------------
   // FERMETURE DU MENU AU CLIC EXTERIEUR
@@ -62,47 +62,54 @@ function LibraryCard({
   }, []);
 
   // --------------------------------------------------
-  // MEDITER AVEC CETTE CREATION
+  // MEDITER
   // --------------------------------------------------
 
   const handleMeditate = () => {
-    // Ferme d'abord le petit menu.
     setIsMenuOpen(false);
 
-    // Demande ensuite à MyCreations
-    // d'ouvrir cette création dans Meditate.
     onMeditate();
   };
 
+  // --------------------------------------------------
+  // SUPPRIMER
+  // --------------------------------------------------
+
+  const handleDelete = () => {
+    setIsMenuOpen(false);
+
+    onDelete();
+  };
+
   return (
-    // Une carte représente une création sauvegardée.
-    //
-    // Les informations viennent de MyCreations.jsx,
-    // qui les récupère depuis MongoDB.
-    <article className="flex items-center gap-3 rounded-astraya-card border border-astraya-border bg-astraya-surface/60 p-4 shadow-astraya-card backdrop-blur-sm">
-      {/* Artwork de la création */}
+    <article
+      className={`relative flex items-center gap-3 rounded-astraya-card border border-astraya-border bg-astraya-surface/60 p-4 shadow-astraya-card backdrop-blur-sm transition ${
+        isMenuOpen
+          ? "z-50"
+          : "z-0"
+      }`}
+    >
+      {/* Artwork */}
       <img
         src={image}
         alt={name}
         className="h-20 w-20 shrink-0 rounded-xl object-cover"
       />
 
-      {/* Informations principales */}
+      {/* Informations */}
       <div className="min-w-0 flex-1">
-        {/* Nom sauvegardé dans MongoDB */}
         <p className="text-sm font-medium text-astraya-text">
           {name}
         </p>
 
-        {/* Description générée à partir de l'audioConfig */}
         <p className="mt-1 text-xs leading-4 text-astraya-muted">
           {description}
         </p>
       </div>
 
-      {/* Actions disponibles sur la création */}
+      {/* Actions */}
       <div className="flex shrink-0 items-center gap-2">
-        {/* Lance ou arrête la preview audio */}
+        {/* Preview */}
         <button
           type="button"
           onClick={onPreview}
@@ -130,7 +137,7 @@ function LibraryCard({
           )}
         </button>
 
-        {/* Menu des trois points */}
+        {/* Menu trois points */}
         <div
           ref={menuRef}
           className="relative"
@@ -153,10 +160,9 @@ function LibraryCard({
             />
           </button>
 
-          {/* Petit menu affiché
-              lorsqu'on clique sur les trois points */}
           {isMenuOpen && (
-            <div className="absolute right-0 top-full z-50 mt-2 w-32 overflow-hidden rounded-astraya-control border border-astraya-border bg-astraya-surface shadow-astraya-card">
+            <div className="absolute right-0 top-full z-[100] mt-2 w-36 overflow-hidden rounded-astraya-control border border-astraya-border bg-astraya-surface shadow-astraya-card">
+              {/* Méditer */}
               <button
                 type="button"
                 onClick={
@@ -165,6 +171,17 @@ function LibraryCard({
                 className="w-full cursor-pointer px-4 py-3 text-left text-sm text-astraya-text transition hover:bg-astraya-surface-soft"
               >
                 Meditate
+              </button>
+
+              {/* Supprimer */}
+              <button
+                type="button"
+                onClick={
+                  handleDelete
+                }
+                className="w-full cursor-pointer border-t border-astraya-border px-4 py-3 text-left text-sm text-red-300 transition hover:bg-red-400/10"
+              >
+                Delete
               </button>
             </div>
           )}

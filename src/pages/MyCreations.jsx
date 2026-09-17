@@ -4,17 +4,20 @@ import {
   useState,
 } from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import LibraryCard from "../components/library/LibraryCard";
 
-import { useAuth } from "../context/AuthContext";
+import {
+  useAuth,
+} from "../context/AuthContext";
 
 function MyCreations() {
-  // Permet de changer de page avec React Router.
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  // Informations d'authentification.
   const {
     token,
     logout,
@@ -24,19 +27,16 @@ function MyCreations() {
   // DONNEES MONGODB
   // --------------------------------------------------
 
-  // Créations récupérées depuis MongoDB.
   const [
     myCreations,
     setMyCreations,
   ] = useState([]);
 
-  // Etat du chargement.
   const [
     isLoading,
     setIsLoading,
   ] = useState(true);
 
-  // Message d'erreur éventuel.
   const [
     errorMessage,
     setErrorMessage,
@@ -46,41 +46,49 @@ function MyCreations() {
   // PREVIEW AUDIO
   // --------------------------------------------------
 
-  // _id de la création actuellement jouée.
   const [
     previewCreationId,
     setPreviewCreationId,
   ] = useState(null);
 
-  // Moteur audio de la preview.
   const previewAudioContextRef =
     useRef(null);
 
-  // Tous les éléments Audio utilisés.
   const previewAudiosRef =
     useRef([]);
 
-  // Tous les GainNodes utilisés.
   const previewGainsRef =
     useRef([]);
 
-  // Empêche les clics multiples
-  // pendant une transition.
   const isPreviewTransitioningRef =
     useRef(false);
 
-  // Timeout utilisé lors du fade-out.
   const previewTimeoutRef =
     useRef(null);
 
   // --------------------------------------------------
-  // CHARGEMENT DES CREATIONS
+  // IMAGE
+  // --------------------------------------------------
+
+  const getCreationImage = (
+    imagePath
+  ) => {
+    const finalPath =
+      imagePath ||
+      "images/ambiant-images/astraya-background-3.png";
+
+    return `${
+      import.meta.env.BASE_URL
+    }${finalPath}`;
+  };
+
+  // --------------------------------------------------
+  // CHARGEMENT
   // --------------------------------------------------
 
   useEffect(() => {
     const fetchCreations =
       async () => {
-        // Sans token, pas de requête.
         if (!token) {
           setIsLoading(false);
 
@@ -103,7 +111,6 @@ function MyCreations() {
               }
             );
 
-          // Token invalide ou expiré.
           if (
             response.status ===
             401
@@ -114,7 +121,9 @@ function MyCreations() {
               "Your session has expired."
             );
 
-            navigate("/login");
+            navigate(
+              "/login"
+            );
 
             return;
           }
@@ -132,7 +141,9 @@ function MyCreations() {
             creations
           );
 
-          setErrorMessage("");
+          setErrorMessage(
+            ""
+          );
         } catch (error) {
           console.error(
             "Erreur lors du chargement des créations :",
@@ -143,7 +154,9 @@ function MyCreations() {
             "Unable to load your creations."
           );
         } finally {
-          setIsLoading(false);
+          setIsLoading(
+            false
+          );
         }
       };
 
@@ -176,7 +189,10 @@ function MyCreations() {
             volume > 0
         )
         .map(
-          ([sound, volume]) => {
+          ([
+            sound,
+            volume,
+          ]) => {
             const formattedSound =
               sound
                 .charAt(0)
@@ -188,39 +204,148 @@ function MyCreations() {
         );
 
     if (
-      activeSounds.length === 0
+      activeSounds.length ===
+      0
     ) {
       return "Custom meditation";
     }
 
-    return activeSounds.join(" • ");
+    return activeSounds.join(
+      " • "
+    );
   };
 
   // --------------------------------------------------
-  // OUVRIR UNE CREATION DANS MEDITATE
+  // OUVRIR DANS MEDITATE
   // --------------------------------------------------
 
   const handleMeditate = (
     creation
   ) => {
-    // Envoie l'objet MongoDB complet
-    // vers MeditationSetup.
-    //
-    // Il contient notamment :
-    // - le nom
-    // - l'_id
-    // - l'audioConfig
-    navigate("/meditate", {
-      state: {
-        source: "creations",
-        selectedMeditation:
-          creation,
-      },
-    });
+    const meditation = {
+      ...creation,
+
+      image:
+        getCreationImage(
+          creation.image
+        ),
+
+      description:
+        getCreationDescription(
+          creation.audioConfig
+        ),
+    };
+
+    navigate(
+      "/meditate",
+      {
+        state: {
+          source:
+            "creations",
+
+          selectedMeditation:
+            meditation,
+        },
+      }
+    );
   };
 
   // --------------------------------------------------
-  // ARRET D'UNE PREVIEW
+  // SUPPRESSION
+  // --------------------------------------------------
+
+  const handleDeleteCreation =
+    async (creation) => {
+      // Demande une confirmation avant
+      // de supprimer définitivement.
+      const isConfirmed =
+        window.confirm(
+          `Delete "${creation.name}"?`
+        );
+
+      if (!isConfirmed) {
+        return;
+      }
+
+      try {
+        const response =
+          await fetch(
+            `http://localhost:3000/creations/${creation._id}`,
+            {
+              method:
+                "DELETE",
+
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        // Session expirée.
+        if (
+          response.status ===
+          401
+        ) {
+          logout();
+
+          navigate(
+            "/login"
+          );
+
+          return;
+        }
+
+        const data =
+          await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message ||
+              "Unable to delete creation."
+          );
+        }
+
+        // Si la création supprimée
+        // était actuellement en preview,
+        // on arrête d'abord l'audio.
+        if (
+          previewCreationId ===
+          creation._id
+        ) {
+          stopPreview();
+        }
+
+        // Supprime immédiatement la création
+        // du state React.
+        //
+        // Pas besoin de recharger toute la page.
+        setMyCreations(
+          (
+            currentCreations
+          ) =>
+            currentCreations.filter(
+              (
+                currentCreation
+              ) =>
+                currentCreation._id !==
+                creation._id
+            )
+        );
+      } catch (error) {
+        console.error(
+          "Delete creation error:",
+          error
+        );
+
+        alert(
+          "Unable to delete creation."
+        );
+      }
+    };
+
+  // --------------------------------------------------
+  // STOP PREVIEW
   // --------------------------------------------------
 
   const stopPreview = (
@@ -306,13 +431,15 @@ function MyCreations() {
   };
 
   // --------------------------------------------------
-  // LANCEMENT D'UNE PREVIEW
+  // START PREVIEW
   // --------------------------------------------------
 
   const startPreview = (
     creation
   ) => {
-    if (!creation.audioConfig) {
+    if (
+      !creation.audioConfig
+    ) {
       return;
     }
 
@@ -336,11 +463,13 @@ function MyCreations() {
     // PAD
     // --------------------------------------------------
 
-    const padAudio = new Audio(
-      `${
-        import.meta.env.BASE_URL
-      }audio/pads/${config.atmosphere}-${config.pitch}.wav`
-    );
+    const padAudio =
+      new Audio(
+        `${
+          import.meta.env
+            .BASE_URL
+        }audio/pads/${config.atmosphere}-${config.pitch}.wav`
+      );
 
     padAudio.loop = true;
 
@@ -352,7 +481,8 @@ function MyCreations() {
     const padGain =
       audioContext.createGain();
 
-    padGain.gain.value = 0;
+    padGain.gain.value =
+      0;
 
     padSource.connect(
       padGain
@@ -374,13 +504,16 @@ function MyCreations() {
     // MUSICAL THEME
     // --------------------------------------------------
 
-    const themeAudio = new Audio(
-      `${
-        import.meta.env.BASE_URL
-      }audio/themes/soft-strings-${config.pitch}.wav`
-    );
+    const themeAudio =
+      new Audio(
+        `${
+          import.meta.env
+            .BASE_URL
+        }audio/themes/soft-strings-${config.pitch}.wav`
+      );
 
-    themeAudio.loop = true;
+    themeAudio.loop =
+      true;
 
     const themeSource =
       audioContext.createMediaElementSource(
@@ -390,7 +523,8 @@ function MyCreations() {
     const themeGain =
       audioContext.createGain();
 
-    themeGain.gain.value = 0;
+    themeGain.gain.value =
+      0;
 
     themeSource.connect(
       themeGain
@@ -409,7 +543,7 @@ function MyCreations() {
     );
 
     // --------------------------------------------------
-    // NATURE SOUNDS
+    // NATURE
     // --------------------------------------------------
 
     const natureSounds = [
@@ -424,11 +558,13 @@ function MyCreations() {
 
     natureSounds.forEach(
       (soundName) => {
-        const audio = new Audio(
-          `${
-            import.meta.env.BASE_URL
-          }audio/nature/${soundName}.wav`
-        );
+        const audio =
+          new Audio(
+            `${
+              import.meta.env
+                .BASE_URL
+            }audio/nature/${soundName}.wav`
+          );
 
         audio.loop = true;
 
@@ -440,7 +576,8 @@ function MyCreations() {
         const gain =
           audioContext.createGain();
 
-        gain.gain.value = 0;
+        gain.gain.value =
+          0;
 
         source.connect(
           gain
@@ -486,7 +623,7 @@ function MyCreations() {
     const now =
       audioContext.currentTime;
 
-    // Volume du pad.
+    // Pad.
     padGain.gain.setValueAtTime(
       0,
       now
@@ -499,7 +636,7 @@ function MyCreations() {
       now + 1
     );
 
-    // Volume du Musical Theme.
+    // Musical Theme.
     themeGain.gain.setValueAtTime(
       0,
       now
@@ -512,11 +649,14 @@ function MyCreations() {
       now + 1
     );
 
-    // Volumes Nature.
+    // Nature.
     Object.entries(
       config.natureVolumes
     ).forEach(
-      ([soundName, volume]) => {
+      ([
+        soundName,
+        volume,
+      ]) => {
         const gain =
           natureGains[
             soundName
@@ -561,10 +701,13 @@ function MyCreations() {
       creation._id
     ) {
       stopPreview();
+
       return;
     }
 
-    if (previewCreationId) {
+    if (
+      previewCreationId
+    ) {
       stopPreview(() => {
         startPreview(
           creation
@@ -656,34 +799,46 @@ function MyCreations() {
 
         <section className="flex flex-col gap-3">
           {myCreations.map(
-            (meditation) => (
+            (
+              meditation
+            ) => (
               <LibraryCard
                 key={
                   meditation._id
                 }
+
                 name={
                   meditation.name
                 }
+
                 description={getCreationDescription(
                   meditation.audioConfig
                 )}
-                image={`${
-                  import.meta.env.BASE_URL
-                }images/presets-artworks/astraya-artwork-moon-piano.png`}
+
+                image={getCreationImage(
+                  meditation.image
+                )}
+
                 isPreviewPlaying={
                   previewCreationId ===
                   meditation._id
                 }
+
                 onPreview={() =>
                   handlePreview(
                     meditation
                   )
                 }
 
-                // Ouvre cette création
-                // directement dans Meditate.
                 onMeditate={() =>
                   handleMeditate(
+                    meditation
+                  )
+                }
+
+                // Supprime cette création.
+                onDelete={() =>
+                  handleDeleteCreation(
                     meditation
                   )
                 }

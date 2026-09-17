@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useState,
+} from "react";
+
 import {
   Navigate,
   useLocation,
@@ -7,36 +10,38 @@ import {
 import SessionPlayer from "../components/meditationSession/SessionPlayer";
 
 function MeditationSession() {
-  // useLocation permet notamment de récupérer
-  // les données envoyées avec navigate(..., { state }).
-  const location = useLocation();
+  // Récupère les données envoyées
+  // avec navigate(..., { state }).
+  const location =
+    useLocation();
 
-  // Indique si la fenêtre de sortie est ouverte.
-  //
-  // On l'utilise aussi pour modifier visuellement
-  // l'arrière-plan de la Session.
-  const [isExitMenuOpen, setIsExitMenuOpen] =
-    useState(false);
+  // Indique si la fenêtre
+  // de sortie est ouverte.
+  const [
+    isExitMenuOpen,
+    setIsExitMenuOpen,
+  ] = useState(false);
 
-  // Données reçues depuis la page précédente.
+  // Données reçues depuis :
   //
-  // Elles peuvent venir :
-  // - d'un preset Astraya
-  // - de Create Meditation
-  // - maintenant d'une création MongoDB
-  const state = location.state;
+  // - un preset Astraya
+  // - Create Meditation
+  // - une création MongoDB
+  const state =
+    location.state;
 
-  // Si quelqu'un tape directement /session
-  // sans avoir choisi de méditation,
-  // aucune donnée n'existe.
-  //
-  // On le renvoie donc vers Meditate.
+  // Si quelqu'un ouvre directement /session
+  // sans avoir sélectionné de méditation,
+  // on revient vers Meditate.
   if (!state) {
-    return <Navigate to="/meditate" replace />;
+    return (
+      <Navigate
+        to="/meditate"
+        replace
+      />
+    );
   }
 
-  // Récupère les trois informations importantes
-  // envoyées vers la Session.
   const {
     meditation,
     duration,
@@ -45,7 +50,7 @@ function MeditationSession() {
 
   return (
     <main className="relative h-dvh w-full overflow-hidden">
-      {/* Artwork de la méditation */}
+      {/* Artwork choisi pour la méditation */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ease-out ${
           isExitMenuOpen
@@ -53,7 +58,8 @@ function MeditationSession() {
             : "scale-100 blur-0"
         }`}
         style={{
-          backgroundImage: `url(${meditation.image})`,
+          backgroundImage:
+            `url(${meditation.image})`,
         }}
       />
 
@@ -66,13 +72,20 @@ function MeditationSession() {
         }`}
       />
 
-      {/* SessionPlayer reçoit les données
-          et gère réellement la méditation */}
+      {/* Player principal */}
       <SessionPlayer
-        meditationName={meditation.name}
-        duration={duration}
-        audioConfig={audioConfig}
-        onExitMenuChange={setIsExitMenuOpen}
+        meditationName={
+          meditation.name
+        }
+        duration={
+          duration
+        }
+        audioConfig={
+          audioConfig
+        }
+        onExitMenuChange={
+          setIsExitMenuOpen
+        }
       />
     </main>
   );

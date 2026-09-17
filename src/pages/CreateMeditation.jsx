@@ -19,330 +19,321 @@ import StartMeditation from "../components/meditationSetup/StartMeditation";
 import { useAuth } from "../context/AuthContext";
 
 function CreateMeditation() {
-  // Permet de changer de page avec React Router.
-  //
-  // On l'utilise notamment pour envoyer l'utilisateur
-  // vers /login s'il essaie de sauvegarder sans être connecté.
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  // Récupère les informations d'authentification
-  // depuis AuthContext.
-  //
-  // token :
-  // JWT reçu après le login.
-  //
-  // logout :
-  // permet de supprimer la session si le token
-  // est invalide ou expiré.
   const {
     token,
     logout,
   } = useAuth();
 
-  // Est-ce que la preview est en train de jouer ?
-  const [isPreviewPlaying, setIsPreviewPlaying] =
-    useState(false);
+  // --------------------------------------------------
+  // CREATION
+  // --------------------------------------------------
 
-  // Nom de la création utilisateur.
+  const [
+    isPreviewPlaying,
+    setIsPreviewPlaying,
+  ] = useState(false);
+
+  // Nom de la création.
+  const [
+    creationName,
+    setCreationName,
+  ] = useState(
+    "Moon Lake"
+  );
+
+  // Artwork sélectionné.
   //
-  // Ce nom sera sauvegardé dans MongoDB
-  // avec l'audioConfig.
-  const [creationName, setCreationName] =
-    useState("Moon Lake");
+  // On garde uniquement le chemin relatif
+  // qui sera ensuite sauvegardé dans MongoDB.
+  const [
+    creationImage,
+    setCreationImage,
+  ] = useState(
+    "images/ambiant-images/astraya-background-3.png"
+  );
 
-  // Indique si une sauvegarde est actuellement en cours.
-  //
-  // Cela permet notamment de désactiver temporairement
-  // le bouton Save pendant la requête vers le backend.
-  const [isSaving, setIsSaving] =
-    useState(false);
+  const [
+    isSaving,
+    setIsSaving,
+  ] = useState(false);
 
-  // Réglages principaux du pad.
-  const [selectedPitch, setSelectedPitch] =
-    useState("bright");
+  // --------------------------------------------------
+  // AUDIO CONFIG
+  // --------------------------------------------------
+
+  const [
+    selectedPitch,
+    setSelectedPitch,
+  ] = useState("bright");
 
   const [
     selectedAtmosphere,
     setSelectedAtmosphere,
   ] = useState("airy");
 
-  // Le pad Atmosphere est actif de base.
   const [
     isAtmosphereEnabled,
     setIsAtmosphereEnabled,
   ] = useState(true);
 
-  // Le Musical Theme est désactivé de base.
   const [
     isMusicalThemeEnabled,
     setIsMusicalThemeEnabled,
   ] = useState(false);
 
-  // Volumes des sons de nature.
-  const [rainVolume, setRainVolume] =
-    useState(0);
+  const [
+    rainVolume,
+    setRainVolume,
+  ] = useState(0);
 
-  const [forestVolume, setForestVolume] =
-    useState(25);
+  const [
+    forestVolume,
+    setForestVolume,
+  ] = useState(25);
 
-  const [birdsVolume, setBirdsVolume] =
-    useState(80);
+  const [
+    birdsVolume,
+    setBirdsVolume,
+  ] = useState(80);
 
-  const [riverVolume, setRiverVolume] =
-    useState(0);
+  const [
+    riverVolume,
+    setRiverVolume,
+  ] = useState(0);
 
-  const [wavesVolume, setWavesVolume] =
-    useState(0);
+  const [
+    wavesVolume,
+    setWavesVolume,
+  ] = useState(0);
 
-  // Durée de méditation choisie.
-  // 15 minutes par défaut.
   const [
     selectedDuration,
     setSelectedDuration,
   ] = useState(15);
 
-  // --------------------------------------------------
-  // CONFIGURATION AUDIO
-  // --------------------------------------------------
-
-  // Configuration finale du mix.
-  //
-  // Cet objet est utilisé à la fois :
-  // - pour lancer une vraie session
-  // - pour sauvegarder la création dans MongoDB
   const audioConfig = {
     pitch: selectedPitch,
-    atmosphere: selectedAtmosphere,
-    atmosphereEnabled: isAtmosphereEnabled,
+
+    atmosphere:
+      selectedAtmosphere,
+
+    atmosphereEnabled:
+      isAtmosphereEnabled,
+
     musicalThemeEnabled:
       isMusicalThemeEnabled,
 
     natureVolumes: {
       rain: rainVolume,
-      forest: forestVolume,
-      birds: birdsVolume,
-      river: riverVolume,
-      waves: wavesVolume,
+      forest:
+        forestVolume,
+      birds:
+        birdsVolume,
+      river:
+        riverVolume,
+      waves:
+        wavesVolume,
     },
   };
 
   // --------------------------------------------------
-  // SAUVEGARDE DANS MONGODB
+  // SAVE
   // --------------------------------------------------
 
-  // Envoie la création actuelle vers notre API Express.
-  const handleSaveCreation = async () => {
-    // Empêche d'enregistrer une création sans nom.
-    if (!creationName.trim()) {
-      alert(
-        "Please enter a creation name."
-      );
-
-      return;
-    }
-
-    // Une création sauvegardée appartient maintenant
-    // obligatoirement à un utilisateur.
-    //
-    // Sans JWT, le backend refuserait de toute façon
-    // la requête avec une erreur 401.
-    if (!token) {
-      alert(
-        "Please log in to save your creation."
-      );
-
-      // Redirige l'utilisateur vers la page Login.
-      navigate("/login");
-
-      return;
-    }
-
-    try {
-      // Indique que la sauvegarde commence.
-      setIsSaving(true);
-
-      // Envoie une requête POST
-      // vers notre backend Express.
-      const response = await fetch(
-        "http://localhost:3000/creations",
-        {
-          method: "POST",
-
-          headers: {
-            // Indique que les données envoyées
-            // sont au format JSON.
-            "Content-Type":
-              "application/json",
-
-            // Envoie le JWT au backend.
-            //
-            // Le format attendu par notre middleware est :
-            //
-            // Authorization: Bearer LE_TOKEN
-            //
-            // Express pourra donc vérifier
-            // quel utilisateur est connecté.
-            Authorization:
-              `Bearer ${token}`,
-          },
-
-          // Transforme notre objet JavaScript
-          // en JSON pour pouvoir l'envoyer.
-          //
-          // On n'envoie PAS le userId.
-          //
-          // Le backend récupère le vrai userId
-          // directement depuis le JWT validé.
-          body: JSON.stringify({
-            name:
-              creationName.trim(),
-
-            audioConfig,
-          }),
-        }
-      );
-
-      // Si le serveur renvoie 401,
-      // cela signifie que le JWT est absent,
-      // invalide ou expiré.
-      if (response.status === 401) {
-        // Supprime la session locale.
-        logout();
-
+  const handleSaveCreation =
+    async () => {
+      if (
+        !creationName.trim()
+      ) {
         alert(
-          "Your session has expired. Please log in again."
+          "Please enter a creation name."
         );
 
-        // Retour vers la page Login.
+        return;
+      }
+
+      if (!token) {
+        alert(
+          "Please log in to save your creation."
+        );
+
         navigate("/login");
 
         return;
       }
 
-      // Transforme la réponse JSON
-      // en objet JavaScript.
-      const data =
-        await response.json();
+      try {
+        setIsSaving(true);
 
-      // Si le backend renvoie une autre erreur,
-      // on passe dans le catch.
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Save failed"
+        const response =
+          await fetch(
+            "http://localhost:3000/creations",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  `Bearer ${token}`,
+              },
+
+              body: JSON.stringify(
+                {
+                  name:
+                    creationName.trim(),
+
+                  // Sauvegarde l'artwork choisi.
+                  image:
+                    creationImage,
+
+                  audioConfig,
+                }
+              ),
+            }
+          );
+
+        if (
+          response.status ===
+          401
+        ) {
+          logout();
+
+          alert(
+            "Your session has expired. Please log in again."
+          );
+
+          navigate("/login");
+
+          return;
+        }
+
+        const data =
+          await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message ||
+              "Save failed"
+          );
+        }
+
+        console.log(
+          "Creation saved:",
+          data
         );
+
+        alert(
+          "Creation saved!"
+        );
+      } catch (error) {
+        console.error(
+          "Save error:",
+          error
+        );
+
+        alert(
+          "Unable to save creation."
+        );
+      } finally {
+        setIsSaving(false);
       }
-
-      // La création a été sauvegardée
-      // et contient maintenant notamment :
-      //
-      // _id
-      // userId
-      // createdAt
-      // updatedAt
-      console.log(
-        "Creation saved:",
-        data
-      );
-
-      alert("Creation saved!");
-    } catch (error) {
-      console.error(
-        "Save error:",
-        error
-      );
-
-      alert(
-        "Unable to save creation."
-      );
-    } finally {
-      // Cette partie s'exécute
-      // que la sauvegarde réussisse ou échoue.
-      setIsSaving(false);
-    }
-  };
+    };
 
   // --------------------------------------------------
-  // MEDITATION TEMPORAIRE POUR LA SESSION
+  // MEDITATION POUR LA SESSION
   // --------------------------------------------------
 
-  // Méditation utilisée par la page Session.
-  //
-  // Le nom correspond au nom choisi
-  // par l'utilisateur.
+  // Ici on transforme le chemin relatif
+  // en vraie URL frontend.
   const customMeditation = {
     name: creationName,
 
     image: `${
       import.meta.env.BASE_URL
-    }images/ambiant-images/astraya-background-3.png`,
+    }${creationImage}`,
   };
 
   // --------------------------------------------------
   // REFERENCES AUDIO
   // --------------------------------------------------
 
-  // Moteur audio principal du navigateur.
-  const audioContextRef = useRef(null);
+  const audioContextRef =
+    useRef(null);
 
-  // Deux lecteurs pour les pads.
-  const audioOneRef = useRef(null);
-  const audioTwoRef = useRef(null);
+  const audioOneRef =
+    useRef(null);
 
-  // Contrôle du volume des deux pads.
-  const gainOneRef = useRef(null);
-  const gainTwoRef = useRef(null);
+  const audioTwoRef =
+    useRef(null);
 
-  // Lecteur actuellement actif
-  // et lecteur disponible.
-  const activeAudioRef = useRef(null);
-  const inactiveAudioRef = useRef(null);
+  const gainOneRef =
+    useRef(null);
 
-  // Même chose pour leurs volumes.
-  const activeGainRef = useRef(null);
-  const inactiveGainRef = useRef(null);
+  const gainTwoRef =
+    useRef(null);
 
-  // Deux lecteurs pour le Musical Theme.
-  const themeAudioOneRef = useRef(null);
-  const themeAudioTwoRef = useRef(null);
+  const activeAudioRef =
+    useRef(null);
 
-  // Contrôle du volume des deux thèmes.
-  const themeGainOneRef = useRef(null);
-  const themeGainTwoRef = useRef(null);
+  const inactiveAudioRef =
+    useRef(null);
 
-  // Thème actif et thème disponible.
-  const activeThemeAudioRef = useRef(null);
-  const inactiveThemeAudioRef = useRef(null);
+  const activeGainRef =
+    useRef(null);
 
-  // Même chose pour leurs volumes.
-  const activeThemeGainRef = useRef(null);
-  const inactiveThemeGainRef = useRef(null);
+  const inactiveGainRef =
+    useRef(null);
 
-  // Contient les 5 sons de nature.
-  const natureAudioRef = useRef({});
+  const themeAudioOneRef =
+    useRef(null);
 
-  // Contient les 5 contrôles
-  // de volume correspondants.
-  const natureGainRef = useRef({});
+  const themeAudioTwoRef =
+    useRef(null);
 
-  // Timers utilisés par les transitions.
-  const crossfadeTimeoutRef = useRef(null);
+  const themeGainOneRef =
+    useRef(null);
+
+  const themeGainTwoRef =
+    useRef(null);
+
+  const activeThemeAudioRef =
+    useRef(null);
+
+  const inactiveThemeAudioRef =
+    useRef(null);
+
+  const activeThemeGainRef =
+    useRef(null);
+
+  const inactiveThemeGainRef =
+    useRef(null);
+
+  const natureAudioRef =
+    useRef({});
+
+  const natureGainRef =
+    useRef({});
+
+  const crossfadeTimeoutRef =
+    useRef(null);
 
   const themeCrossfadeTimeoutRef =
     useRef(null);
 
-  const pauseTimeoutRef = useRef(null);
+  const pauseTimeoutRef =
+    useRef(null);
 
   const previewLockTimeoutRef =
     useRef(null);
 
-  // Verrou anti-spam
-  // pour les changements de pad.
   const isPadTransitioningRef =
     useRef(false);
 
-  // Verrou anti double-clic
-  // Preview / Pause.
   const isPreviewTransitioningRef =
     useRef(false);
 
@@ -350,8 +341,13 @@ function CreateMeditation() {
   // CONTROLES
   // --------------------------------------------------
 
-  const handlePitchChange = (pitch) => {
-    if (pitch === selectedPitch) {
+  const handlePitchChange = (
+    pitch
+  ) => {
+    if (
+      pitch ===
+      selectedPitch
+    ) {
       return;
     }
 
@@ -367,14 +363,17 @@ function CreateMeditation() {
         true;
     }
 
-    setSelectedPitch(pitch);
+    setSelectedPitch(
+      pitch
+    );
   };
 
   const handleAtmosphereChange = (
     atmosphere
   ) => {
     if (
-      atmosphere === selectedAtmosphere
+      atmosphere ===
+      selectedAtmosphere
     ) {
       return;
     }
@@ -409,7 +408,9 @@ function CreateMeditation() {
     isPreviewTransitioningRef.current =
       true;
 
-    setIsPreviewPlaying(nextValue);
+    setIsPreviewPlaying(
+      nextValue
+    );
 
     if (
       previewLockTimeoutRef.current
@@ -446,10 +447,14 @@ function CreateMeditation() {
     }audio/pads/airy-bright.wav`;
 
     const audioOne =
-      new Audio(initialPadPath);
+      new Audio(
+        initialPadPath
+      );
 
     const audioTwo =
-      new Audio(initialPadPath);
+      new Audio(
+        initialPadPath
+      );
 
     audioOne.loop = true;
     audioTwo.loop = true;
@@ -473,37 +478,59 @@ function CreateMeditation() {
     gainOne.gain.value = 0;
     gainTwo.gain.value = 0;
 
-    sourceOne.connect(gainOne);
+    sourceOne.connect(
+      gainOne
+    );
+
     gainOne.connect(
       audioContext.destination
     );
 
-    sourceTwo.connect(gainTwo);
+    sourceTwo.connect(
+      gainTwo
+    );
+
     gainTwo.connect(
       audioContext.destination
     );
 
-    audioOneRef.current = audioOne;
-    audioTwoRef.current = audioTwo;
+    audioOneRef.current =
+      audioOne;
 
-    gainOneRef.current = gainOne;
-    gainTwoRef.current = gainTwo;
+    audioTwoRef.current =
+      audioTwo;
 
-    activeAudioRef.current = audioOne;
-    inactiveAudioRef.current = audioTwo;
+    gainOneRef.current =
+      gainOne;
 
-    activeGainRef.current = gainOne;
-    inactiveGainRef.current = gainTwo;
+    gainTwoRef.current =
+      gainTwo;
+
+    activeAudioRef.current =
+      audioOne;
+
+    inactiveAudioRef.current =
+      audioTwo;
+
+    activeGainRef.current =
+      gainOne;
+
+    inactiveGainRef.current =
+      gainTwo;
 
     const initialThemePath = `${
       import.meta.env.BASE_URL
     }audio/themes/soft-strings-bright.wav`;
 
     const themeAudioOne =
-      new Audio(initialThemePath);
+      new Audio(
+        initialThemePath
+      );
 
     const themeAudioTwo =
-      new Audio(initialThemePath);
+      new Audio(
+        initialThemePath
+      );
 
     themeAudioOne.loop = true;
     themeAudioTwo.loop = true;
@@ -524,8 +551,11 @@ function CreateMeditation() {
     const themeGainTwo =
       audioContext.createGain();
 
-    themeGainOne.gain.value = 0;
-    themeGainTwo.gain.value = 0;
+    themeGainOne.gain.value =
+      0;
+
+    themeGainTwo.gain.value =
+      0;
 
     themeSourceOne.connect(
       themeGainOne
@@ -575,39 +605,45 @@ function CreateMeditation() {
       "waves",
     ];
 
-    natureSounds.forEach((sound) => {
-      const audio = new Audio(
-        `${
-          import.meta.env.BASE_URL
-        }audio/nature/${sound}.wav`
-      );
+    natureSounds.forEach(
+      (sound) => {
+        const audio =
+          new Audio(
+            `${
+              import.meta.env
+                .BASE_URL
+            }audio/nature/${sound}.wav`
+          );
 
-      audio.loop = true;
+        audio.loop = true;
 
-      const source =
-        audioContext.createMediaElementSource(
-          audio
+        const source =
+          audioContext.createMediaElementSource(
+            audio
+          );
+
+        const gain =
+          audioContext.createGain();
+
+        gain.gain.value = 0;
+
+        source.connect(
+          gain
         );
 
-      const gain =
-        audioContext.createGain();
+        gain.connect(
+          audioContext.destination
+        );
 
-      gain.gain.value = 0;
+        natureAudioRef.current[
+          sound
+        ] = audio;
 
-      source.connect(gain);
-
-      gain.connect(
-        audioContext.destination
-      );
-
-      natureAudioRef.current[
-        sound
-      ] = audio;
-
-      natureGainRef.current[
-        sound
-      ] = gain;
-    });
+        natureGainRef.current[
+          sound
+        ] = gain;
+      }
+    );
 
     audioContextRef.current =
       audioContext;
@@ -653,9 +689,11 @@ function CreateMeditation() {
 
       Object.values(
         natureAudioRef.current
-      ).forEach((audio) => {
-        audio.pause();
-      });
+      ).forEach(
+        (audio) => {
+          audio.pause();
+        }
+      );
 
       audioContext.close();
     };
@@ -737,7 +775,9 @@ function CreateMeditation() {
       now
     );
 
-    if (isPreviewPlaying) {
+    if (
+      isPreviewPlaying
+    ) {
       if (
         audioContext.state ===
         "suspended"
@@ -774,25 +814,34 @@ function CreateMeditation() {
       );
 
       const natureVolumes = {
-        rain: rainVolume,
-        forest: forestVolume,
-        birds: birdsVolume,
-        river: riverVolume,
-        waves: wavesVolume,
+        rain:
+          rainVolume,
+        forest:
+          forestVolume,
+        birds:
+          birdsVolume,
+        river:
+          riverVolume,
+        waves:
+          wavesVolume,
       };
 
       Object.entries(
         natureAudioRef.current
       ).forEach(
-        ([sound, audio]) => {
+        ([
+          sound,
+          audio,
+        ]) => {
           const gain =
             natureGainRef.current[
               sound
             ];
 
           const targetVolume =
-            natureVolumes[sound] /
-            100;
+            natureVolumes[
+              sound
+            ] / 100;
 
           audio.play();
 
@@ -854,21 +903,23 @@ function CreateMeditation() {
 
       Object.values(
         natureGainRef.current
-      ).forEach((gain) => {
-        gain.gain.cancelScheduledValues(
-          now
-        );
+      ).forEach(
+        (gain) => {
+          gain.gain.cancelScheduledValues(
+            now
+          );
 
-        gain.gain.setValueAtTime(
-          gain.gain.value,
-          now
-        );
+          gain.gain.setValueAtTime(
+            gain.gain.value,
+            now
+          );
 
-        gain.gain.linearRampToValueAtTime(
-          0,
-          now + 0.6
-        );
-      });
+          gain.gain.linearRampToValueAtTime(
+            0,
+            now + 0.6
+          );
+        }
+      );
 
       pauseTimeoutRef.current =
         setTimeout(() => {
@@ -880,9 +931,11 @@ function CreateMeditation() {
 
           Object.values(
             natureAudioRef.current
-          ).forEach((audio) => {
-            audio.pause();
-          });
+          ).forEach(
+            (audio) => {
+              audio.pause();
+            }
+          );
 
           pauseTimeoutRef.current =
             null;
@@ -924,12 +977,17 @@ function CreateMeditation() {
       import.meta.env.BASE_URL
     }audio/pads/${selectedAtmosphere}-${selectedPitch}.wav`;
 
-    if (!isPreviewPlaying) {
+    if (
+      !isPreviewPlaying
+    ) {
       activeAudio.src =
         newAudioPath;
 
-      activeAudio.loop = true;
-      activeAudio.currentTime = 0;
+      activeAudio.loop =
+        true;
+
+      activeAudio.currentTime =
+        0;
 
       isPadTransitioningRef.current =
         false;
@@ -964,7 +1022,8 @@ function CreateMeditation() {
     inactiveAudio.src =
       newAudioPath;
 
-    inactiveAudio.loop = true;
+    inactiveAudio.loop =
+      true;
 
     try {
       inactiveAudio.currentTime =
@@ -1059,7 +1118,9 @@ function CreateMeditation() {
       import.meta.env.BASE_URL
     }audio/themes/soft-strings-${selectedPitch}.wav`;
 
-    if (!isPreviewPlaying) {
+    if (
+      !isPreviewPlaying
+    ) {
       activeThemeAudio.src =
         newThemePath;
 
@@ -1204,7 +1265,9 @@ function CreateMeditation() {
       now
     );
 
-    if (isAtmosphereEnabled) {
+    if (
+      isAtmosphereEnabled
+    ) {
       activeGain.gain.linearRampToValueAtTime(
         1,
         now + 0.4
@@ -1271,7 +1334,9 @@ function CreateMeditation() {
       now
     );
 
-    if (isMusicalThemeEnabled) {
+    if (
+      isMusicalThemeEnabled
+    ) {
       activeThemeGain.gain.linearRampToValueAtTime(
         1,
         now + 0.4
@@ -1305,18 +1370,28 @@ function CreateMeditation() {
     }
 
     const volumes = {
-      rain: rainVolume,
-      forest: forestVolume,
-      birds: birdsVolume,
-      river: riverVolume,
-      waves: wavesVolume,
+      rain:
+        rainVolume,
+      forest:
+        forestVolume,
+      birds:
+        birdsVolume,
+      river:
+        riverVolume,
+      waves:
+        wavesVolume,
     };
 
     const now =
       audioContext.currentTime;
 
-    Object.entries(volumes).forEach(
-      ([sound, volume]) => {
+    Object.entries(
+      volumes
+    ).forEach(
+      ([
+        sound,
+        volume,
+      ]) => {
         const gain =
           natureGainRef.current[
             sound
@@ -1357,15 +1432,23 @@ function CreateMeditation() {
   return (
     <div className="px-2 py-5 text-astraya-text">
       <div className="mx-auto flex w-full max-w-md flex-col gap-5">
-        {/* Nom de la création sauvegardée */}
+        {/* Identité de la création :
+            artwork + nom */}
         <CreationName
-          creationName={creationName}
+          creationName={
+            creationName
+          }
           setCreationName={
             setCreationName
           }
+          creationImage={
+            creationImage
+          }
+          setCreationImage={
+            setCreationImage
+          }
         />
 
-        {/* Preview du mix + sauvegarde MongoDB */}
         <MeditationActions
           isPreviewPlaying={
             isPreviewPlaying
@@ -1376,7 +1459,9 @@ function CreateMeditation() {
           onSave={
             handleSaveCreation
           }
-          isSaving={isSaving}
+          isSaving={
+            isSaving
+          }
         />
 
         <PitchSelector
@@ -1413,7 +1498,9 @@ function CreateMeditation() {
         />
 
         <NatureSoundsMixer
-          rainVolume={rainVolume}
+          rainVolume={
+            rainVolume
+          }
           setRainVolume={
             setRainVolume
           }
@@ -1423,21 +1510,26 @@ function CreateMeditation() {
           setForestVolume={
             setForestVolume
           }
-          birdsVolume={birdsVolume}
+          birdsVolume={
+            birdsVolume
+          }
           setBirdsVolume={
             setBirdsVolume
           }
-          riverVolume={riverVolume}
+          riverVolume={
+            riverVolume
+          }
           setRiverVolume={
             setRiverVolume
           }
-          wavesVolume={wavesVolume}
+          wavesVolume={
+            wavesVolume
+          }
           setWavesVolume={
             setWavesVolume
           }
         />
 
-        {/* Durée de la vraie session */}
         <DurationSelector
           selectedDuration={
             selectedDuration
@@ -1447,7 +1539,6 @@ function CreateMeditation() {
           }
         />
 
-        {/* Envoie le mix actuel vers /session */}
         <StartMeditation
           selectedMeditation={
             customMeditation
@@ -1455,7 +1546,9 @@ function CreateMeditation() {
           selectedDuration={
             selectedDuration
           }
-          audioConfig={audioConfig}
+          audioConfig={
+            audioConfig
+          }
         />
       </div>
     </div>

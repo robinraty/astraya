@@ -20,95 +20,6 @@ import {
 } from "../../context/AuthContext";
 
 // --------------------------------------------------
-// PRESETS OFFICIELS ASTRAYA
-// --------------------------------------------------
-//
-// Les presets officiels restent directement
-// dans le frontend.
-//
-// Ils ne dépendent pas d'un compte utilisateur.
-
-const astrayaPresets = [
-  {
-    id: "airy-birds",
-    name: "Airy Birds",
-    description:
-      "Bright ambience with forest and birds",
-
-    image: `${
-      import.meta.env.BASE_URL
-    }images/ambiant-images/astraya-background-1.png`,
-
-    audioConfig: {
-      pitch: "bright",
-      atmosphere: "airy",
-      atmosphereEnabled: true,
-      musicalThemeEnabled: false,
-
-      natureVolumes: {
-        rain: 0,
-        forest: 25,
-        birds: 80,
-        river: 0,
-        waves: 0,
-      },
-    },
-  },
-
-  {
-    id: "soft-strings",
-    name: "Soft Strings",
-    description:
-      "Gentle strings with a calm natural atmosphere",
-
-    image: `${
-      import.meta.env.BASE_URL
-    }images/ambiant-images/astraya-background-3.png`,
-
-    audioConfig: {
-      pitch: "natural",
-      atmosphere: "airy",
-      atmosphereEnabled: true,
-      musicalThemeEnabled: true,
-
-      natureVolumes: {
-        rain: 10,
-        forest: 20,
-        birds: 20,
-        river: 0,
-        waves: 0,
-      },
-    },
-  },
-
-  {
-    id: "deep-forest",
-    name: "Deep Forest",
-    description:
-      "Dark forest ambience with river and distant birds",
-
-    image: `${
-      import.meta.env.BASE_URL
-    }images/ambiant-images/astraya-background-2.png`,
-
-    audioConfig: {
-      pitch: "dark",
-      atmosphere: "deep",
-      atmosphereEnabled: true,
-      musicalThemeEnabled: false,
-
-      natureVolumes: {
-        rain: 0,
-        forest: 70,
-        birds: 20,
-        river: 45,
-        waves: 0,
-      },
-    },
-  },
-];
-
-// --------------------------------------------------
 // DESCRIPTION D'UNE CREATION UTILISATEUR
 // --------------------------------------------------
 
@@ -130,7 +41,10 @@ const getCreationDescription = (
           volume > 0
       )
       .map(
-        ([sound, volume]) => {
+        ([
+          sound,
+          volume,
+        ]) => {
           const formattedSound =
             sound
               .charAt(0)
@@ -147,28 +61,51 @@ const getCreationDescription = (
     return "Custom meditation";
   }
 
-  return activeSounds.join(" • ");
+  return activeSounds.join(
+    " • "
+  );
 };
 
 // --------------------------------------------------
 // IDENTIFIANT UNIQUE
 // --------------------------------------------------
 //
-// Les presets utilisent "id".
+// Maintenant, les presets ET les créations
+// viennent de MongoDB.
 //
-// MongoDB utilise "_id".
+// Les deux possèdent donc un _id.
 //
-// Cette fonction nous permet
-// de gérer les deux avec le même code.
+// On garde quand même un fallback sur "id"
+// pour rendre le composant un peu plus robuste.
 
 const getSoundId = (
   sound
 ) => {
   return (
-    sound?.id ||
     sound?._id ||
+    sound?.id ||
     null
   );
+};
+
+// --------------------------------------------------
+// IMAGE
+// --------------------------------------------------
+//
+// MongoDB stocke uniquement un chemin relatif.
+//
+// Cette fonction le transforme en vraie URL
+// utilisable par le navigateur.
+const getImageUrl = (
+  imagePath
+) => {
+  const finalPath =
+    imagePath ||
+    "images/ambiant-images/astraya-background-3.png";
+
+  return `${
+    import.meta.env.BASE_URL
+  }${finalPath}`;
 };
 
 function SoundCarousel({
@@ -185,43 +122,56 @@ function SoundCarousel({
   } = useAuth();
 
   // --------------------------------------------------
+  // PRESETS MONGODB
+  // --------------------------------------------------
+
+  const [
+    presets,
+    setPresets,
+  ] = useState([]);
+
+  const [
+    isLoadingPresets,
+    setIsLoadingPresets,
+  ] = useState(true);
+
+  const [
+    presetsError,
+    setPresetsError,
+  ] = useState("");
+
+  // --------------------------------------------------
   // CREATIONS MONGODB
   // --------------------------------------------------
 
-  // Les vraies créations personnelles
-  // récupérées depuis le backend.
   const [
     myCreations,
     setMyCreations,
   ] = useState([]);
 
-  // Etat du chargement MongoDB.
   const [
     isLoadingCreations,
     setIsLoadingCreations,
   ] = useState(false);
 
-  // Message d'erreur éventuel.
   const [
     creationsError,
     setCreationsError,
   ] = useState("");
 
   // --------------------------------------------------
-  // SELECTION / PREVIEW
+  // SELECTION
   // --------------------------------------------------
 
-  // ID de la méditation sélectionnée.
   const [
     selectedSound,
     setSelectedSound,
   ] = useState(
     getSoundId(
       selectedMeditation
-    ) || "airy-birds"
+    )
   );
 
-  // ID de la méditation actuellement en preview.
   const [
     previewSoundId,
     setPreviewSoundId,
@@ -264,19 +214,12 @@ function SoundCarousel({
     useRef(null);
 
   // --------------------------------------------------
-  // DONNEES A AFFICHER
+  // LISTE ACTIVE
   // --------------------------------------------------
 
-  // Selon l'onglet choisi :
-  //
-  // presets
-  // → presets officiels
-  //
-  // creations
-  // → créations MongoDB
   const sounds =
     source === "presets"
-      ? astrayaPresets
+      ? presets
       : myCreations;
 
   const sectionTitle =
@@ -285,24 +228,97 @@ function SoundCarousel({
       : "My Creations";
 
   // --------------------------------------------------
-  // CHARGEMENT DES CREATIONS MONGODB
+  // CHARGEMENT DES PRESETS
+  // --------------------------------------------------
+  //
+  // Cette route est publique.
+  //
+  // Pas besoin de JWT.
+
+  useEffect(() => {
+    const fetchPresets =
+      async () => {
+        try {
+          setIsLoadingPresets(
+            true
+          );
+
+          setPresetsError(
+            ""
+          );
+
+          const response =
+            await fetch(
+              "http://localhost:3000/presets"
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              "Unable to load presets."
+            );
+          }
+
+          const presetData =
+            await response.json();
+
+          // Le backend renvoie les chemins
+          // d'image relatifs.
+          //
+          // On les transforme en vraies URLs.
+          const formattedPresets =
+            presetData.map(
+              (preset) => ({
+                ...preset,
+
+                image:
+                  getImageUrl(
+                    preset.image
+                  ),
+              })
+            );
+
+          setPresets(
+            formattedPresets
+          );
+        } catch (error) {
+          console.error(
+            "Erreur lors du chargement des presets :",
+            error
+          );
+
+          setPresetsError(
+            "Unable to load Astraya presets."
+          );
+        } finally {
+          setIsLoadingPresets(
+            false
+          );
+        }
+      };
+
+    fetchPresets();
+  }, []);
+
+  // --------------------------------------------------
+  // CHARGEMENT DES CREATIONS
   // --------------------------------------------------
 
   useEffect(() => {
-    // On ne contacte MongoDB que lorsque
-    // l'onglet My Creations est utilisé.
+    // Les créations ne sont nécessaires
+    // que si cet onglet est ouvert.
     if (
-      source !== "creations"
+      source !==
+      "creations"
     ) {
       return;
     }
 
     const fetchCreations =
       async () => {
-        // Sans compte connecté,
-        // il n'y a aucune création privée à charger.
         if (!token) {
-          setMyCreations([]);
+          setMyCreations(
+            []
+          );
 
           setCreationsError(
             "Log in to access your creations."
@@ -320,7 +336,9 @@ function SoundCarousel({
             true
           );
 
-          setCreationsError("");
+          setCreationsError(
+            ""
+          );
 
           const response =
             await fetch(
@@ -333,16 +351,19 @@ function SoundCarousel({
               }
             );
 
-          // Session invalide ou expirée.
           if (
             response.status ===
             401
           ) {
             logout();
 
-            setMyCreations([]);
+            setMyCreations(
+              []
+            );
 
-            navigate("/login");
+            navigate(
+              "/login"
+            );
 
             return;
           }
@@ -356,21 +377,17 @@ function SoundCarousel({
           const creations =
             await response.json();
 
-          // MongoDB ne stocke pas actuellement
-          // d'image ou de description.
-          //
-          // On ajoute donc uniquement
-          // les informations visuelles
-          // nécessaires au carousel.
           const formattedCreations =
             creations.map(
-              (creation) => ({
+              (
+                creation
+              ) => ({
                 ...creation,
 
-                image: `${
-                  import.meta.env
-                    .BASE_URL
-                }images/presets-artworks/astraya-artwork-moon-piano.png`,
+                image:
+                  getImageUrl(
+                    creation.image
+                  ),
 
                 description:
                   getCreationDescription(
@@ -452,7 +469,8 @@ function SoundCarousel({
     }
 
     const cardWidth =
-      firstCard.getBoundingClientRect()
+      firstCard
+        .getBoundingClientRect()
         .width;
 
     const gap = 12;
@@ -461,10 +479,15 @@ function SoundCarousel({
       left:
         direction ===
         "right"
-          ? cardWidth + gap
-          : -(cardWidth + gap),
+          ? cardWidth +
+            gap
+          : -(
+              cardWidth +
+              gap
+            ),
 
-      behavior: "smooth",
+      behavior:
+        "smooth",
     });
   };
 
@@ -476,19 +499,21 @@ function SoundCarousel({
     sound
   ) => {
     const soundId =
-      getSoundId(sound);
+      getSoundId(
+        sound
+      );
 
     setSelectedSound(
       soundId
     );
 
-    // Envoie l'objet entier
-    // vers MeditationSetup.
-    onSoundChange(sound);
+    onSoundChange(
+      sound
+    );
   };
 
   // --------------------------------------------------
-  // ARRET PREVIEW
+  // STOP PREVIEW
   // --------------------------------------------------
 
   const stopPreview = (
@@ -574,13 +599,15 @@ function SoundCarousel({
   };
 
   // --------------------------------------------------
-  // LANCEMENT PREVIEW
+  // START PREVIEW
   // --------------------------------------------------
 
   const startPreview = (
     sound
   ) => {
-    if (!sound.audioConfig) {
+    if (
+      !sound.audioConfig
+    ) {
       return;
     }
 
@@ -600,15 +627,14 @@ function SoundCarousel({
     const audios = [];
     const gains = [];
 
-    // --------------------------------------------------
     // PAD
-    // --------------------------------------------------
-
-    const padAudio = new Audio(
-      `${
-        import.meta.env.BASE_URL
-      }audio/pads/${config.atmosphere}-${config.pitch}.wav`
-    );
+    const padAudio =
+      new Audio(
+        `${
+          import.meta.env
+            .BASE_URL
+        }audio/pads/${config.atmosphere}-${config.pitch}.wav`
+      );
 
     padAudio.loop = true;
 
@@ -620,7 +646,8 @@ function SoundCarousel({
     const padGain =
       audioContext.createGain();
 
-    padGain.gain.value = 0;
+    padGain.gain.value =
+      0;
 
     padSource.connect(
       padGain
@@ -638,17 +665,17 @@ function SoundCarousel({
       padGain
     );
 
-    // --------------------------------------------------
     // MUSICAL THEME
-    // --------------------------------------------------
+    const themeAudio =
+      new Audio(
+        `${
+          import.meta.env
+            .BASE_URL
+        }audio/themes/soft-strings-${config.pitch}.wav`
+      );
 
-    const themeAudio = new Audio(
-      `${
-        import.meta.env.BASE_URL
-      }audio/themes/soft-strings-${config.pitch}.wav`
-    );
-
-    themeAudio.loop = true;
+    themeAudio.loop =
+      true;
 
     const themeSource =
       audioContext.createMediaElementSource(
@@ -658,7 +685,8 @@ function SoundCarousel({
     const themeGain =
       audioContext.createGain();
 
-    themeGain.gain.value = 0;
+    themeGain.gain.value =
+      0;
 
     themeSource.connect(
       themeGain
@@ -676,10 +704,7 @@ function SoundCarousel({
       themeGain
     );
 
-    // --------------------------------------------------
     // NATURE
-    // --------------------------------------------------
-
     const natureSounds = [
       "rain",
       "forest",
@@ -692,11 +717,13 @@ function SoundCarousel({
 
     natureSounds.forEach(
       (soundName) => {
-        const audio = new Audio(
-          `${
-            import.meta.env.BASE_URL
-          }audio/nature/${soundName}.wav`
-        );
+        const audio =
+          new Audio(
+            `${
+              import.meta.env
+                .BASE_URL
+            }audio/nature/${soundName}.wav`
+          );
 
         audio.loop = true;
 
@@ -708,7 +735,8 @@ function SoundCarousel({
         const gain =
           audioContext.createGain();
 
-        gain.gain.value = 0;
+        gain.gain.value =
+          0;
 
         source.connect(
           gain
@@ -754,7 +782,6 @@ function SoundCarousel({
     const now =
       audioContext.currentTime;
 
-    // Pad.
     padGain.gain.setValueAtTime(
       0,
       now
@@ -767,7 +794,6 @@ function SoundCarousel({
       now + 1
     );
 
-    // Musical Theme.
     themeGain.gain.setValueAtTime(
       0,
       now
@@ -780,11 +806,13 @@ function SoundCarousel({
       now + 1
     );
 
-    // Nature.
     Object.entries(
       config.natureVolumes
     ).forEach(
-      ([soundName, volume]) => {
+      ([
+        soundName,
+        volume,
+      ]) => {
         const gain =
           natureGains[
             soundName
@@ -807,7 +835,9 @@ function SoundCarousel({
     );
 
     setPreviewSoundId(
-      getSoundId(sound)
+      getSoundId(
+        sound
+      )
     );
   };
 
@@ -825,7 +855,9 @@ function SoundCarousel({
     }
 
     const soundId =
-      getSoundId(sound);
+      getSoundId(
+        sound
+      );
 
     if (
       previewSoundId ===
@@ -836,7 +868,9 @@ function SoundCarousel({
       return;
     }
 
-    if (previewSoundId) {
+    if (
+      previewSoundId
+    ) {
       stopPreview(() => {
         startPreview(
           sound
@@ -846,27 +880,23 @@ function SoundCarousel({
       return;
     }
 
-    startPreview(sound);
+    startPreview(
+      sound
+    );
   };
 
   // --------------------------------------------------
   // SELECTION AUTOMATIQUE
   // --------------------------------------------------
 
-  // Quand la liste change :
-  //
-  // 1. si la méditation déjà sélectionnée
-  //    existe dans cette liste,
-  //    on la garde
-  //
-  // 2. sinon on sélectionne le premier élément
   useEffect(() => {
-    // Pendant le chargement de My Creations,
-    // on attend simplement les données.
-    if (
-      source === "creations" &&
-      isLoadingCreations
-    ) {
+    const isLoading =
+      source ===
+      "presets"
+        ? isLoadingPresets
+        : isLoadingCreations;
+
+    if (isLoading) {
       return;
     }
 
@@ -892,15 +922,14 @@ function SoundCarousel({
     const matchingSound =
       sounds.find(
         (sound) =>
-          getSoundId(sound) ===
-          currentId
+          getSoundId(
+            sound
+          ) === currentId
       );
 
-    // Cas important :
-    //
-    // on arrive depuis My Creations
-    // avec FocusBirdsRiver déjà sélectionnée.
-    if (matchingSound) {
+    if (
+      matchingSound
+    ) {
       setSelectedSound(
         getSoundId(
           matchingSound
@@ -914,7 +943,6 @@ function SoundCarousel({
       return;
     }
 
-    // Sinon on choisit le premier élément.
     const firstSound =
       sounds[0];
 
@@ -934,19 +962,22 @@ function SoundCarousel({
     if (carousel) {
       carousel.scrollTo({
         left: 0,
-        behavior: "smooth",
+        behavior:
+          "smooth",
       });
     }
 
     updateScrollButtons();
   }, [
     source,
+    presets,
     myCreations,
+    isLoadingPresets,
     isLoadingCreations,
   ]);
 
   // --------------------------------------------------
-  // FLECHES DU CAROUSEL
+  // FLECHES
   // --------------------------------------------------
 
   useEffect(() => {
@@ -966,7 +997,7 @@ function SoundCarousel({
   }, []);
 
   // --------------------------------------------------
-  // NETTOYAGE AUDIO
+  // CLEANUP AUDIO
   // --------------------------------------------------
 
   useEffect(() => {
@@ -1002,6 +1033,18 @@ function SoundCarousel({
   // INTERFACE
   // --------------------------------------------------
 
+  const activeError =
+    source ===
+    "presets"
+      ? presetsError
+      : creationsError;
+
+  const activeLoading =
+    source ===
+    "presets"
+      ? isLoadingPresets
+      : isLoadingCreations;
+
   return (
     <section className="min-w-0">
       {/* Titre + flèches */}
@@ -1030,7 +1073,9 @@ function SoundCarousel({
           >
             <ChevronLeft
               size={16}
-              strokeWidth={1.5}
+              strokeWidth={
+                1.5
+              }
             />
           </button>
 
@@ -1053,45 +1098,48 @@ function SoundCarousel({
           >
             <ChevronRight
               size={16}
-              strokeWidth={1.5}
+              strokeWidth={
+                1.5
+              }
             />
           </button>
         </div>
       </div>
 
       {/* Chargement */}
-      {source ===
-        "creations" &&
-        isLoadingCreations && (
-          <p className="mt-4 text-sm text-astraya-muted">
-            Loading creations...
-          </p>
-        )}
+      {activeLoading && (
+        <p className="mt-4 text-sm text-astraya-muted">
+          Loading...
+        </p>
+      )}
 
       {/* Erreur */}
-      {source ===
-        "creations" &&
-        creationsError && (
-          <p className="mt-4 text-sm text-astraya-muted">
-            {creationsError}
-          </p>
-        )}
+      {activeError && (
+        <p className="mt-4 text-sm text-astraya-muted">
+          {activeError}
+        </p>
+      )}
 
       {/* Aucun résultat */}
-      {source ===
-        "creations" &&
-        !isLoadingCreations &&
-        !creationsError &&
-        sounds.length === 0 && (
+      {!activeLoading &&
+        !activeError &&
+        sounds.length ===
+          0 && (
           <p className="mt-4 text-sm text-astraya-muted">
-            No saved meditations yet.
+            {source ===
+            "presets"
+              ? "No Astraya presets available."
+              : "No saved meditations yet."}
           </p>
         )}
 
       {/* Carousel */}
-      {sounds.length > 0 && (
+      {sounds.length >
+        0 && (
         <div
-          ref={carouselRef}
+          ref={
+            carouselRef
+          }
           onScroll={
             updateScrollButtons
           }
@@ -1119,14 +1167,15 @@ function SoundCarousel({
 
               return (
                 <div
-                  key={soundId}
+                  key={
+                    soundId
+                  }
                   className={`flex w-[calc((100%_-_1.5rem)/3)] shrink-0 snap-start flex-col rounded-astraya-control border p-2 backdrop-blur-sm transition-all duration-300 ease-out ${
                     isSelected
                       ? "border-astraya-accent bg-astraya-accent/10 shadow-astraya-selected"
                       : "border-astraya-border bg-astraya-surface/20"
                   }`}
                 >
-                  {/* Sélection */}
                   <button
                     type="button"
                     onClick={() =>
@@ -1159,7 +1208,6 @@ function SoundCarousel({
                     </p>
                   </button>
 
-                  {/* Preview */}
                   <div className="mt-auto flex justify-end pt-3">
                     <button
                       type="button"
@@ -1186,12 +1234,16 @@ function SoundCarousel({
                     >
                       {isPreviewPlaying ? (
                         <Pause
-                          size={12}
+                          size={
+                            12
+                          }
                           fill="currentColor"
                         />
                       ) : (
                         <Play
-                          size={12}
+                          size={
+                            12
+                          }
                           fill="currentColor"
                         />
                       )}
