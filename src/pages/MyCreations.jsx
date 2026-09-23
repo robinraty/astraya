@@ -27,6 +27,7 @@ function MyCreations() {
   // DONNEES MONGODB
   // --------------------------------------------------
 
+  // ! Je fais un state myCreations, dont la valeur initiale est un tableau vide []
   const [
     myCreations,
     setMyCreations,
@@ -82,9 +83,24 @@ function MyCreations() {
     }${finalPath}`;
   };
 
-  // --------------------------------------------------
-  // CHARGEMENT
-  // --------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // !--------------------------------------------------
+  // ! CHARGEMENT
+  // !--------------------------------------------------
+
+  // fetch envoie une requête HTTP GET à mon backend pour récupérer les créations. Dans le backend, Mongoose va les chercher dans MongoDB, puis le backend les renvoie au frontend sous forme d'un tableau
 
   useEffect(() => {
     const fetchCreations =
@@ -134,9 +150,12 @@ function MyCreations() {
             );
           }
 
+
+// Le GET récupère un TABLEAU de créations
           const creations =
             await response.json();
 
+// On stock le tableau creations dans le state MyCreations.
           setMyCreations(
             creations
           );
@@ -166,6 +185,21 @@ function MyCreations() {
     logout,
     navigate,
   ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // --------------------------------------------------
   // DESCRIPTION
